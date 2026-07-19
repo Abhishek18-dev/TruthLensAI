@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+/* Force Tailwind CSS v4 to use class-based selector strategy for dark mode */
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Dynamic Brand Color Tokens */
+  --color-brand-beige: #FAF7F0;
+  --color-brand-border-beige: #E8E2D5;
+  --color-brand-navy: #0A1128;
+  --color-brand-navy-light: #101F42;
+  --color-brand-border-navy: #1B2A4A;
+  --color-brand-text-light: #1A2536;
+  --color-brand-text-dark: #F4EFE6;
+  --color-brand-classic-navy: #1E3A8A;
+  --color-brand-camel: #C5A880;
+  --color-brand-camel-dark: #9A7B56;
+
+  /* Custom Alert/Sentiment Colors */
+  --color-fake-red: #dc2626;
+  --color-fake-bg: #fef2f2;
+  --color-real-green: #16a34a;
+  --color-real-bg: #0b1c0e;
+}
+
+/* Theme variables for charts and custom elements */
+:root {
+  --chart-grid: #E8E2D5;
+  --chart-axis: #9A7B56;
+  --chart-tooltip-bg: #FAF7F0;
+  --chart-tooltip-border: #E8E2D5;
+  --chart-tooltip-text: #1A2536;
+}
+
+.dark {
+  --chart-grid: #1B2A4A;
+  --chart-axis: #C5A880;
+  --chart-tooltip-bg: #101F42;
+  --chart-tooltip-border: #1B2A4A;
+  --chart-tooltip-text: #F4EFE6;
+}
+
+/* Base body styles matching palette rules */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-brand-beige);
+  color: var(--color-brand-text-light);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+  background-color: var(--color-brand-navy);
+  color: var(--color-brand-text-dark);
+}
+
+/* Theme-dependent Glassmorphism panel configurations */
+.glass-panel {
+  background: #ffffff;
+  border: 1px solid var(--color-brand-border-beige);
+  color: var(--color-brand-text-light);
+  box-shadow: 0 4px 20px 0 rgba(10, 17, 40, 0.02);
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.dark .glass-panel {
+  background: var(--color-brand-navy-light);
+  border-color: var(--color-brand-border-navy);
+  color: var(--color-brand-text-dark);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Dynamic dot grid patterns */
+.grid-bg {
+  background-image: radial-gradient(var(--color-brand-border-beige) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+  transition: background-image 0.3s ease;
+}
+
+.dark .grid-bg {
+  background-image: radial-gradient(rgba(27, 42, 74, 0.4) 1.2px, transparent 1.2px);
+}
+
+.grid-bg-dark {
+  background-image: radial-gradient(var(--color-brand-border-beige) 0.8px, transparent 0.8px);
+  background-size: 24px 24px;
+}
+
+.dark .grid-bg-dark {
+  background-image: radial-gradient(rgba(27, 42, 74, 0.5) 1px, transparent 1px);
+}
+
+/* Flow line animations */
+@keyframes flow {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-flow-line {
+  stroke-dasharray: 8;
+  animation: flow 1.5s linear infinite;
+}
