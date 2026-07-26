@@ -40,82 +40,93 @@ export const Dashboard: React.FC = () => {
 
   if (loading || !analytics) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-        <div className="w-12 h-12 border-4 border-navy-700 dark:border-navy-500 border-t-gold-500 rounded-full animate-spin"></div>
-        <p className="text-sm font-semibold text-navy-800 dark:text-navy-200 animate-pulse">
-          Loading Dashboard overview...
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6 animate-pulse">
+        <div className="relative w-16 h-16">
+          <div className="absolute inset-0 rounded-full border-4 border-[#E8E2D5] dark:border-[#1B2A4A]"></div>
+          <div className="absolute inset-0 rounded-full border-4 border-t-[#C5A880] border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
+        </div>
+        <p className="text-sm font-medium text-[#1A2536] dark:text-[#F4EFE6] tracking-wide">
+          Loading dashboard metrics...
         </p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 grid-bg">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 animate-slideUp">
       
       {/* 4 Top KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children">
         
         {/* TOTAL SCANS */}
-        <div className="glass-panel rounded-2xl p-5 border border-beige-200 dark:border-navy-700 flex items-center justify-between transition-colors">
+        <div className="glass-panel card-hover rounded-2xl p-6 border border-[#E8E2D5] dark:border-[#1B2A4A] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-lg bg-white/50 dark:bg-[#101F42]/50 shadow-sm backdrop-blur-sm">
+          <div className="flex justify-between items-start mb-4">
+            <span className="text-xs font-semibold text-[#1A2536]/70 dark:text-[#F4EFE6]/70 uppercase tracking-widest">Total Scans</span>
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-[#FAF7F0] to-[#E8E2D5] dark:from-[#1B2A4A] dark:to-[#0A1128] border border-[#E8E2D5] dark:border-[#1B2A4A] shadow-sm">
+              <FileText size={18} className="text-[#1E3A8A] dark:text-[#C5A880]" />
+            </div>
+          </div>
           <div className="space-y-1">
-            <span className="text-[10px] font-bold text-navy-450 dark:text-navy-300 uppercase tracking-widest block">Total Scans</span>
-            <div className="flex items-baseline space-x-2">
-              <span className="text-3xl font-extrabold text-navy-950 dark:text-white">{analytics.total_predictions}</span>
-              <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded flex items-center">
+            <div className="flex items-baseline space-x-3">
+              <span className="text-4xl font-extrabold text-[#1A2536] dark:text-[#F4EFE6] tracking-tight">{analytics.total_predictions}</span>
+              <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full flex items-center border border-emerald-200/50 dark:border-emerald-800/50">
                 +12% ↗
               </span>
             </div>
-            <span className="text-[10px] text-navy-500 dark:text-navy-400 block pt-1 font-light">Aggregated workspace scans</span>
-          </div>
-          <div className="p-2.5 bg-navy-50 dark:bg-navy-900 border border-beige-200 dark:border-navy-800 rounded-xl text-navy-800 dark:text-navy-200">
-            <FileText size={18} />
+            <span className="text-xs text-[#1A2536]/50 dark:text-[#F4EFE6]/50 font-medium">Aggregated workspace scans</span>
           </div>
         </div>
 
         {/* FAKE/MISLEADING RATE */}
-        <div className="glass-panel rounded-2xl p-5 border border-beige-200 dark:border-navy-700 flex items-center justify-between transition-colors">
-          <div className="space-y-1">
-            <span className="text-[10px] font-bold text-navy-450 dark:text-navy-300 uppercase tracking-widest block">Fake/Misleading Rate</span>
-            <div className="flex items-baseline space-x-2">
-              <span className="text-3xl font-extrabold text-navy-950 dark:text-white">{analytics.fake_percentage}%</span>
-              <span className="text-[10px] text-navy-500 dark:text-navy-400 font-medium">of total</span>
+        <div className="glass-panel card-hover rounded-2xl p-6 border border-[#E8E2D5] dark:border-[#1B2A4A] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-lg bg-white/50 dark:bg-[#101F42]/50 shadow-sm backdrop-blur-sm">
+          <div className="flex justify-between items-start mb-4">
+            <span className="text-xs font-semibold text-[#1A2536]/70 dark:text-[#F4EFE6]/70 uppercase tracking-widest">Fake Rate</span>
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-red-50 to-red-100/50 dark:from-red-900/20 dark:to-red-950/40 border border-red-100 dark:border-red-900/50 shadow-sm">
+              <ShieldAlert size={18} className="text-red-600 dark:text-red-400" />
             </div>
-            <span className="text-[10px] text-navy-500 dark:text-navy-400 block pt-1 font-light">Flagged suspicion index</span>
           </div>
-          <div className="p-2.5 bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900 rounded-xl text-red-600 dark:text-red-400">
-            <ShieldAlert size={18} />
+          <div className="space-y-1">
+            <div className="flex items-baseline space-x-3">
+              <span className="text-4xl font-extrabold text-[#1A2536] dark:text-[#F4EFE6] tracking-tight">{analytics.fake_percentage}%</span>
+              <span className="text-xs text-[#1A2536]/60 dark:text-[#F4EFE6]/60 font-medium">of total</span>
+            </div>
+            <span className="text-xs text-[#1A2536]/50 dark:text-[#F4EFE6]/50 font-medium">Flagged suspicion index</span>
           </div>
         </div>
 
         {/* AVERAGE CONFIDENCE */}
-        <div className="glass-panel rounded-2xl p-5 border border-beige-200 dark:border-navy-700 flex items-center justify-between transition-colors">
-          <div className="space-y-1">
-            <span className="text-[10px] font-bold text-navy-450 dark:text-navy-300 uppercase tracking-widest block">Average Confidence</span>
-            <div className="flex items-baseline space-x-2">
-              <span className="text-3xl font-extrabold text-navy-950 dark:text-white">{analytics.average_confidence}%</span>
-              <span className="text-[10px] text-navy-550 dark:text-navy-400 font-medium">score</span>
+        <div className="glass-panel card-hover rounded-2xl p-6 border border-[#E8E2D5] dark:border-[#1B2A4A] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-lg bg-white/50 dark:bg-[#101F42]/50 shadow-sm backdrop-blur-sm">
+          <div className="flex justify-between items-start mb-4">
+            <span className="text-xs font-semibold text-[#1A2536]/70 dark:text-[#F4EFE6]/70 uppercase tracking-widest">Avg Confidence</span>
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/20 dark:to-emerald-950/40 border border-emerald-100 dark:border-emerald-900/50 shadow-sm">
+              <TrendingUp size={18} className="text-emerald-600 dark:text-emerald-450" />
             </div>
-            <span className="text-[10px] text-navy-500 dark:text-navy-400 block pt-1 font-light">Mean model evaluation weight</span>
           </div>
-          <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-100 dark:border-emerald-900 rounded-xl text-emerald-600 dark:text-emerald-450">
-            <TrendingUp size={18} />
+          <div className="space-y-1">
+            <div className="flex items-baseline space-x-3">
+              <span className="text-4xl font-extrabold text-[#1A2536] dark:text-[#F4EFE6] tracking-tight">{analytics.average_confidence}%</span>
+              <span className="text-xs text-[#1A2536]/60 dark:text-[#F4EFE6]/60 font-medium">score</span>
+            </div>
+            <span className="text-xs text-[#1A2536]/50 dark:text-[#F4EFE6]/50 font-medium">Mean model evaluation weight</span>
           </div>
         </div>
 
         {/* INFERENCE LATENCY */}
-        <div className="glass-panel rounded-2xl p-5 border border-beige-200 dark:border-navy-700 flex items-center justify-between transition-colors">
+        <div className="glass-panel card-hover rounded-2xl p-6 border border-[#E8E2D5] dark:border-[#1B2A4A] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-lg bg-white/50 dark:bg-[#101F42]/50 shadow-sm backdrop-blur-sm">
+          <div className="flex justify-between items-start mb-4">
+            <span className="text-xs font-semibold text-[#1A2536]/70 dark:text-[#F4EFE6]/70 uppercase tracking-widest">Latency</span>
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-950/40 border border-blue-100 dark:border-blue-900/50 shadow-sm">
+              <Clock size={18} className="text-blue-600 dark:text-blue-450" />
+            </div>
+          </div>
           <div className="space-y-1">
-            <span className="text-[10px] font-bold text-navy-450 dark:text-navy-300 uppercase tracking-widest block">Inference Latency</span>
-            <div className="flex items-baseline space-x-2">
-              <span className="text-3xl font-extrabold text-navy-950 dark:text-white">180ms</span>
-              <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 px-1.5 py-0.5 rounded border border-blue-200 dark:border-blue-900">
+            <div className="flex items-baseline space-x-3">
+              <span className="text-4xl font-extrabold text-[#1A2536] dark:text-[#F4EFE6] tracking-tight">180ms</span>
+              <span className="text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full border border-blue-200/50 dark:border-blue-800/50">
                 Optimal
               </span>
             </div>
-            <span className="text-[10px] text-navy-500 dark:text-navy-400 block pt-1 font-light">Active classification speed</span>
-          </div>
-          <div className="p-2.5 bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900 rounded-xl text-blue-600 dark:text-blue-450">
-            <Clock size={18} />
+            <span className="text-xs text-[#1A2536]/50 dark:text-[#F4EFE6]/50 font-medium">Active classification speed</span>
           </div>
         </div>
 
@@ -125,73 +136,94 @@ export const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Left Column: Line Chart */}
-        <div className="lg:col-span-2 glass-panel rounded-2xl p-6 border border-beige-200 dark:border-navy-700 transition-colors flex flex-col justify-between">
-          <div className="mb-4">
-            <h3 className="text-lg font-bold text-navy-950 dark:text-white">Detection Frequency & Trust Curve</h3>
-            <p className="text-xs text-navy-500 dark:text-navy-300">Verification metrics for the past week</p>
+        <div className="lg:col-span-2 glass-panel rounded-2xl p-8 border border-[#E8E2D5] dark:border-[#1B2A4A] transition-all duration-300 bg-white/40 dark:bg-[#101F42]/40 shadow-sm backdrop-blur-md flex flex-col">
+          <div className="mb-8 flex flex-col space-y-1 border-b border-[#E8E2D5]/50 dark:border-[#1B2A4A]/50 pb-4">
+            <h3 className="text-xl font-semibold text-[#1A2536] dark:text-[#F4EFE6] tracking-tight">Detection Frequency & Trust Curve</h3>
+            <p className="text-sm text-[#1A2536]/60 dark:text-[#F4EFE6]/60">Verification metrics for the past week</p>
           </div>
-          <div className="h-72 w-full">
+          <div className="h-80 w-full flex-grow">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={analytics.timeline_line} margin={{ top: 10, right: 30, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" vertical={false} />
-                <XAxis dataKey="date" stroke="var(--chart-axis)" style={{ fontSize: 10 }} dy={10} />
-                <YAxis stroke="var(--chart-axis)" style={{ fontSize: 10 }} dx={-5} domain={[0, 100]} />
-                <Tooltip contentStyle={{ background: "var(--chart-tooltip-bg)", border: "1px solid var(--chart-tooltip-border)", borderRadius: "8px", color: "var(--chart-tooltip-text)", fontSize: 11 }} />
-                <Line type="monotone" dataKey="avgConfidence" name="Trust Rating (%)" stroke="#a7976c" strokeWidth={2.5} dot={false} activeDot={{ r: 5 }} />
-                <Line type="monotone" dataKey="total" name="Evaluation Count" stroke="#1e3554" strokeWidth={2.5} dot={false} />
+                <CartesianGrid strokeDasharray="4 4" stroke="var(--chart-grid, #E8E2D5)" vertical={false} opacity={0.5} />
+                <XAxis dataKey="date" stroke="var(--chart-axis, #9CA3AF)" style={{ fontSize: 11, fontWeight: 500 }} dy={10} axisLine={false} tickLine={false} />
+                <YAxis stroke="var(--chart-axis, #9CA3AF)" style={{ fontSize: 11, fontWeight: 500 }} dx={-10} domain={[0, 100]} axisLine={false} tickLine={false} />
+                <Tooltip 
+                  contentStyle={{ 
+                    background: "var(--chart-tooltip-bg, #0A1128)", 
+                    border: "1px solid var(--chart-tooltip-border, #1B2A4A)", 
+                    borderRadius: "12px", 
+                    color: "var(--chart-tooltip-text, #F4EFE6)", 
+                    fontSize: 12,
+                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+                  }} 
+                  cursor={{ stroke: 'var(--chart-grid, #E8E2D5)', strokeWidth: 1, strokeDasharray: '4 4' }}
+                />
+                <Line type="monotone" dataKey="avgConfidence" name="Trust Rating (%)" stroke="#C5A880" strokeWidth={3} dot={false} activeDot={{ r: 6, strokeWidth: 0, fill: "#C5A880" }} />
+                <Line type="monotone" dataKey="total" name="Evaluation Count" stroke="#1E3A8A" strokeWidth={3} dot={false} activeDot={{ r: 6, strokeWidth: 0, fill: "#1E3A8A" }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Right Column: Active Models */}
-        <div className="glass-panel rounded-2xl p-6 border border-beige-200 dark:border-navy-700 transition-colors">
-          <h3 className="text-sm font-extrabold text-navy-950 dark:text-beige-100 uppercase tracking-wider mb-4 flex items-center space-x-2">
-            <Cpu size={16} className="text-gold-500 dark:text-gold-400" />
-            <span>Active Classification Models</span>
-          </h3>
-          <p className="text-xs text-navy-500 dark:text-navy-450 mb-4 font-light">Current model configuration parameters</p>
+        <div className="glass-panel rounded-2xl p-8 border border-[#E8E2D5] dark:border-[#1B2A4A] transition-all duration-300 bg-white/40 dark:bg-[#101F42]/40 shadow-sm backdrop-blur-md">
+          <div className="mb-6 flex flex-col space-y-1">
+            <h3 className="text-lg font-semibold text-[#1A2536] dark:text-[#F4EFE6] tracking-tight flex items-center space-x-2">
+              <Cpu size={20} className="text-[#C5A880]" />
+              <span>Active Classification Models</span>
+            </h3>
+            <p className="text-sm text-[#1A2536]/60 dark:text-[#F4EFE6]/60">Current configuration parameters</p>
+          </div>
 
-          <div className="space-y-4">
+          <div className="relative border-l border-[#E8E2D5] dark:border-[#1B2A4A] ml-3 pl-6 space-y-6 mt-8">
             {/* RoBERTa */}
-            <div className="p-3 bg-navy-50/50 dark:bg-navy-900/40 border border-beige-200 dark:border-navy-850 rounded-xl flex items-center justify-between transition-colors">
-              <div className="space-y-0.5">
-                <span className="text-xs font-bold text-navy-950 dark:text-white block">RoBERTa-Fake-v2</span>
-                <span className="text-[10px] text-navy-500 dark:text-navy-450 block font-light">Primary Contextual</span>
-              </div>
-              <div className="text-right">
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-450 border border-emerald-250 dark:border-emerald-900">
-                  Active
-                </span>
-                <span className="text-[10px] text-navy-500 dark:text-navy-400 block font-mono mt-1">240ms</span>
+            <div className="relative">
+              <div className="absolute -left-[29px] top-1.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-[#FAF7F0] dark:ring-[#0A1128]"></div>
+              <div className="flex items-start justify-between pb-6 border-b border-[#E8E2D5]/60 dark:border-[#1B2A4A]/60">
+                <div className="space-y-1">
+                  <span className="text-sm font-semibold text-[#1A2536] dark:text-[#F4EFE6] block">RoBERTa-Fake-v2</span>
+                  <span className="text-xs text-[#1A2536]/60 dark:text-[#F4EFE6]/60 block">Primary Contextual</span>
+                </div>
+                <div className="flex flex-col items-end space-y-1.5">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-800/50">
+                    Active
+                  </span>
+                  <span className="text-xs text-[#1A2536]/50 dark:text-[#F4EFE6]/50 font-mono">240ms</span>
+                </div>
               </div>
             </div>
 
             {/* BERT */}
-            <div className="p-3 bg-navy-50/50 dark:bg-navy-900/40 border border-beige-200 dark:border-navy-850 rounded-xl flex items-center justify-between transition-colors">
-              <div className="space-y-0.5">
-                <span className="text-xs font-bold text-navy-955 dark:text-white block">BERT-Base</span>
-                <span className="text-[10px] text-navy-500 dark:text-navy-450 block font-light">Speed Screening</span>
-              </div>
-              <div className="text-right">
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold bg-navy-100 text-navy-700 dark:bg-navy-800 dark:text-navy-300 border border-beige-250 dark:border-navy-755">
-                  Idle
-                </span>
-                <span className="text-[10px] text-navy-500 dark:text-navy-400 block font-mono mt-1">120ms</span>
+            <div className="relative">
+              <div className="absolute -left-[29px] top-1.5 w-2.5 h-2.5 rounded-full bg-gray-400 ring-4 ring-[#FAF7F0] dark:ring-[#0A1128]"></div>
+              <div className="flex items-start justify-between pb-6 border-b border-[#E8E2D5]/60 dark:border-[#1B2A4A]/60">
+                <div className="space-y-1">
+                  <span className="text-sm font-semibold text-[#1A2536] dark:text-[#F4EFE6] block">BERT-Base</span>
+                  <span className="text-xs text-[#1A2536]/60 dark:text-[#F4EFE6]/60 block">Speed Screening</span>
+                </div>
+                <div className="flex flex-col items-end space-y-1.5">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-50 text-gray-600 dark:bg-gray-800/50 dark:text-gray-400 border border-gray-200/50 dark:border-gray-700/50">
+                    Idle
+                  </span>
+                  <span className="text-xs text-[#1A2536]/50 dark:text-[#F4EFE6]/50 font-mono">120ms</span>
+                </div>
               </div>
             </div>
 
             {/* GPT-Detector */}
-            <div className="p-3 bg-navy-50/50 dark:bg-navy-900/40 border border-beige-200 dark:border-navy-850 rounded-xl flex items-center justify-between transition-colors">
-              <div className="space-y-0.5">
-                <span className="text-xs font-bold text-navy-955 dark:text-white block">GPT-Detector</span>
-                <span className="text-[10px] text-navy-500 dark:text-navy-450 block font-light">Syntactic Evaluation</span>
-              </div>
-              <div className="text-right">
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-400 border border-blue-200 dark:border-blue-900">
-                  Optimized
-                </span>
-                <span className="text-[10px] text-navy-500 dark:text-navy-400 block font-mono mt-1">195ms</span>
+            <div className="relative">
+              <div className="absolute -left-[29px] top-1.5 w-2.5 h-2.5 rounded-full bg-blue-500 ring-4 ring-[#FAF7F0] dark:ring-[#0A1128]"></div>
+              <div className="flex items-start justify-between">
+                <div className="space-y-1">
+                  <span className="text-sm font-semibold text-[#1A2536] dark:text-[#F4EFE6] block">GPT-Detector</span>
+                  <span className="text-xs text-[#1A2536]/60 dark:text-[#F4EFE6]/60 block">Syntactic Evaluation</span>
+                </div>
+                <div className="flex flex-col items-end space-y-1.5">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200/50 dark:border-blue-800/50">
+                    Optimized
+                  </span>
+                  <span className="text-xs text-[#1A2536]/50 dark:text-[#F4EFE6]/50 font-mono">195ms</span>
+                </div>
               </div>
             </div>
           </div>

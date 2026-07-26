@@ -7,7 +7,6 @@ import {
   Eye, 
   CheckCircle,
   ArrowRight,
-  ArrowDown,
   Search,
   Database,
   ShieldCheck
@@ -31,7 +30,7 @@ export const Pipeline: React.FC<PipelineProps> = ({ currentStep, isAnalyzing, mo
     {
       id: 2,
       title: "Preprocessing",
-      subtitle: "Tokenization & Clean",
+      subtitle: "Tokenization",
       icon: Settings2,
       phase: 1,
     },
@@ -90,7 +89,7 @@ export const Pipeline: React.FC<PipelineProps> = ({ currentStep, isAnalyzing, mo
     {
       id: 2,
       title: "Preprocessing",
-      subtitle: "Tokenization & Clean",
+      subtitle: "Tokenization",
       icon: Settings2,
       phase: 1,
     },
@@ -117,7 +116,7 @@ export const Pipeline: React.FC<PipelineProps> = ({ currentStep, isAnalyzing, mo
     },
     {
       id: 6,
-      title: "Majority Voting",
+      title: "Voting",
       subtitle: "Ensemble Logic",
       icon: GitMerge,
       phase: 5,
@@ -152,7 +151,7 @@ export const Pipeline: React.FC<PipelineProps> = ({ currentStep, isAnalyzing, mo
     },
     {
       id: 11,
-      title: "Final Verdict",
+      title: "Verdict",
       subtitle: "Classification",
       icon: CheckCircle,
       phase: 7,
@@ -163,27 +162,27 @@ export const Pipeline: React.FC<PipelineProps> = ({ currentStep, isAnalyzing, mo
   const completedTarget = mode === "production" ? 4 : 7;
 
   return (
-    <div className="glass-panel rounded-2xl p-6 glow-navy border border-beige-200 dark:border-navy-700 transition-all duration-300">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
+    <div className="glass-panel rounded-2xl p-6 lg:p-8 bg-[#FAF7F0]/80 dark:bg-[#0A1128]/80 backdrop-blur-xl border border-[#E8E2D5] dark:border-[#1B2A4A] shadow-lg transition-all duration-300">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
-          <h3 className="text-lg font-bold text-navy-950 dark:text-white">AI Processing Pipeline</h3>
-          <p className="text-sm text-navy-600 dark:text-navy-200">
-            Real-time representation of model execution sequence.
+          <h3 className="text-xl font-bold text-[#1A2536] dark:text-[#F4EFE6] tracking-tight">AI Processing Pipeline</h3>
+          <p className="text-sm text-[#1A2536]/70 dark:text-[#F4EFE6]/60 mt-1">
+            Real-time execution sequence and agentic reasoning
           </p>
         </div>
         {isAnalyzing && (
-          <span className="mt-2 md:mt-0 inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gold-950/60 text-gold-400 animate-pulse border border-gold-900">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-semibold bg-[#C5A880]/10 text-[#9A7B56] dark:text-[#C5A880] animate-pulse border border-[#C5A880]/20 shadow-[0_0_15px_rgba(197,168,128,0.2)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C5A880] mr-2 animate-ping"></span>
             Running Models ({mode === "production" ? "RoBERTa only" : "All Transformers"})...
           </span>
         )}
       </div>
 
       {/* Pipeline Grid/Flow */}
-      <div className={`grid grid-cols-1 ${mode === "production" ? "md:grid-cols-8" : "md:grid-cols-11"} gap-2 relative`}>
+      <div className={`grid grid-cols-2 sm:grid-cols-3 ${mode === "production" ? "lg:grid-cols-8" : "lg:grid-cols-11"} gap-3 relative`}>
         {steps.map((step, idx) => {
           const Icon = step.icon;
           
-          // Determine status of the step
           let isCompleted = currentStep > step.phase;
           let isActive = isAnalyzing && currentStep === step.phase;
 
@@ -195,58 +194,50 @@ export const Pipeline: React.FC<PipelineProps> = ({ currentStep, isAnalyzing, mo
             <React.Fragment key={step.id}>
               {/* Step Card */}
               <div 
-                className={`relative flex flex-col items-center p-3 rounded-xl transition-all duration-500 border ${
+                className={`relative flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-500 border ${
                   isActive
-                    ? "bg-gold-50 dark:bg-navy-950 border-gold-500 dark:border-gold-400 text-gold-950 dark:text-beige-50 shadow-md scale-105"
+                    ? "bg-white dark:bg-[#101F42] border-[#C5A880] text-[#1A2536] dark:text-[#F4EFE6] shadow-[0_0_20px_rgba(197,168,128,0.2)] scale-105 z-10"
                     : isCompleted
-                    ? "bg-beige-100 dark:bg-navy-900 border-beige-200 dark:border-navy-800 text-navy-900 dark:text-navy-100"
-                    : "bg-beige-50/50 dark:bg-navy-950/40 border-beige-200 dark:border-navy-850 text-navy-600 dark:text-navy-300 opacity-60"
+                    ? "bg-[#FAF7F0] dark:bg-[#101F42]/40 border-[#E8E2D5] dark:border-[#1B2A4A] text-[#1A2536] dark:text-[#F4EFE6]"
+                    : "bg-transparent border-dashed border-[#E8E2D5] dark:border-[#1B2A4A] text-[#1A2536]/40 dark:text-[#F4EFE6]/40"
                 }`}
               >
                 <div 
-                  className={`p-2.5 rounded-xl mb-2 transition-colors ${
+                  className={`p-3 rounded-xl mb-3 transition-colors duration-500 relative ${
                     isActive
-                      ? "bg-gold-500 text-white dark:text-navy-950 animate-bounce"
+                      ? "bg-[#C5A880] text-white shadow-lg animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]"
                       : isCompleted
-                      ? "bg-gold-500/10 text-gold-700 dark:bg-navy-750 dark:text-beige-100"
-                      : "bg-beige-200 text-navy-500 dark:bg-navy-800 dark:text-navy-400"
+                      ? "bg-[#C5A880]/10 text-[#C5A880]"
+                      : "bg-[#E8E2D5]/50 dark:bg-[#1B2A4A]/50 text-current"
                   }`}
                 >
-                  <Icon size={18} />
+                  <Icon size={20} className={isActive ? "animate-pulse" : ""} />
+                  {isCompleted && !isActive && (
+                    <div className="absolute -top-1 -right-1 bg-green-500 text-white rounded-full p-0.5 border-2 border-white dark:border-[#0A1128]">
+                      <CheckCircle size={10} className="stroke-[3]" />
+                    </div>
+                  )}
                 </div>
                 
-                <h4 className="text-xs font-bold text-center">{step.title}</h4>
-                <p className="text-[9px] text-center mt-0.5 opacity-85">{step.subtitle}</p>
+                <h4 className="text-sm font-bold text-center tracking-tight leading-tight">{step.title}</h4>
+                <p className="text-[10px] text-center mt-1 opacity-70 font-medium">{step.subtitle}</p>
                 
-                {/* Step number label */}
-                <span className="absolute top-1.5 right-1.5 text-[9px] font-bold opacity-30">
+                <span className={`absolute top-2 right-2 text-[10px] font-bold ${isActive ? 'opacity-100 text-[#C5A880]' : 'opacity-20'}`}>
                   0{step.id}
                 </span>
               </div>
 
               {/* Arrow Connector for Desktop */}
               {idx < steps.length - 1 && (
-                <div className="hidden md:flex items-center justify-center text-navy-450 dark:text-navy-650">
+                <div className="hidden lg:flex items-center justify-center -mx-1 z-0">
                   <ArrowRight 
-                    size={12} 
-                    className={`${
+                    size={14} 
+                    className={`transition-all duration-500 ${
                       isCompleted && isAnalyzing 
-                        ? "text-gold-500 animate-pulse" 
-                        : "opacity-40"
-                    }`} 
-                  />
-                </div>
-              )}
-
-              {/* Arrow Connector for Mobile */}
-              {idx < steps.length - 1 && (
-                <div className="flex md:hidden items-center justify-center py-1 text-navy-450 dark:text-navy-650">
-                  <ArrowDown 
-                    size={12} 
-                    className={`${
-                      isCompleted && isAnalyzing 
-                        ? "text-gold-500 animate-pulse" 
-                        : "opacity-40"
+                        ? "text-[#C5A880] animate-pulse" 
+                        : isCompleted && !isAnalyzing
+                        ? "text-[#C5A880]/50"
+                        : "text-[#E8E2D5] dark:text-[#1B2A4A]"
                     }`} 
                   />
                 </div>
@@ -256,64 +247,80 @@ export const Pipeline: React.FC<PipelineProps> = ({ currentStep, isAnalyzing, mo
         })}
       </div>
 
-      {/* Under-pipeline detail logs (simulating state progress text) */}
-      <div className="mt-6 bg-navy-950 rounded-xl p-4 text-xs font-mono text-beige-300 border border-navy-800 h-24 overflow-y-auto">
-        <p className="text-gold-400 font-bold mb-1">▶ SYSTEM LOGS:</p>
-        {!isAnalyzing && currentStep === 0 && (
-          <p className="text-beige-400">System idle. Ready to analyze news article text...</p>
-        )}
-        {isAnalyzing && currentStep === 1 && (
-          <p className="text-beige-300 animate-pulse">
-            [PREPROCESSING] Cleaning text corpus, removing stop words, loading tokenizer...
+      {/* Under-pipeline detail logs */}
+      <div className="mt-8 rounded-2xl overflow-hidden border border-[#1B2A4A]/50 dark:border-[#1B2A4A] shadow-inner bg-[#0A1128] relative group">
+        <div className="flex items-center px-4 py-2 border-b border-[#1B2A4A] bg-[#0A1128]/80 backdrop-blur">
+          <div className="flex space-x-2 mr-4">
+            <div className="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
+            <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></div>
+            <div className="w-2.5 h-2.5 rounded-full bg-green-500/80"></div>
+          </div>
+          <p className="text-[10px] font-mono text-[#F4EFE6]/40 tracking-wider">SYSTEM_TERMINAL</p>
+        </div>
+        <div className="p-5 text-xs font-mono text-[#F4EFE6]/80 h-32 overflow-y-auto space-y-1.5 scrollbar-thin scrollbar-thumb-[#1B2A4A]">
+          <p className="text-[#C5A880] font-bold mb-3 flex items-center">
+            <span className="mr-2">❯</span> STARTING ANALYSIS PIPELINE
           </p>
-        )}
-        {mode === "production" ? (
-          <>
-            {isAnalyzing && currentStep === 2 && (
-              <p className="text-beige-300 animate-pulse">[MODEL] Forwarding RoBERTa embedding matrix layer weights...</p>
-            )}
-            {isAnalyzing && currentStep === 3 && (
-              <>
-                <p className="text-beige-300 animate-pulse">[XAI EXPLANATION] Running attribution algorithm to extract keyword triggers...</p>
-                <p className="text-beige-300 animate-pulse">[TAVILY] Generating search queries for verification...</p>
-                <p className="text-beige-300 animate-pulse">[EVIDENCE] Retrieving trusted sources and context...</p>
-                <p className="text-beige-300 animate-pulse">[GEMINI] Analyzing evidence for final verdict...</p>
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            {isAnalyzing && currentStep === 2 && (
-              <p className="text-beige-300 animate-pulse">[MODEL 1] Evaluating BERT transformer model on sequence...</p>
-            )}
-            {isAnalyzing && currentStep === 3 && (
-              <p className="text-beige-300 animate-pulse">[MODEL 2] Running DistilBERT token evaluations...</p>
-            )}
-            {isAnalyzing && currentStep === 4 && (
-              <p className="text-beige-300 animate-pulse">[MODEL 3] Forwarding RoBERTa embedding matrix layer weights...</p>
-            )}
-            {isAnalyzing && currentStep === 5 && (
-              <p className="text-beige-300 font-bold text-gold-400 animate-pulse">
-                [VOTING] Aggregating results. Evaluating consensus with Majority Voting...
-              </p>
-            )}
-            {isAnalyzing && currentStep === 6 && (
-              <>
-                <p className="text-beige-300 animate-pulse">
-                  [XAI EXPLANATION] Running SHAP/LIME feature attributions to fetch keywords...
+          {!isAnalyzing && currentStep === 0 && (
+            <p className="text-[#F4EFE6]/50">System idle. Ready to analyze news article text...</p>
+          )}
+          {isAnalyzing && currentStep === 1 && (
+            <p className="text-green-400/90 flex items-center">
+              <span className="animate-spin mr-2">◒</span> [PREPROCESSING] Cleaning text corpus, loading tokenizer...
+            </p>
+          )}
+          {mode === "production" ? (
+            <>
+              {isAnalyzing && currentStep === 2 && (
+                <p className="text-green-400/90 flex items-center">
+                  <span className="animate-spin mr-2">◒</span> [MODEL] Forwarding RoBERTa embedding matrix weights...
                 </p>
-                <p className="text-beige-300 animate-pulse">[TAVILY] Generating search queries for verification...</p>
-                <p className="text-beige-300 animate-pulse">[EVIDENCE] Retrieving trusted sources and context...</p>
-                <p className="text-beige-300 animate-pulse">[GEMINI] Analyzing evidence for final verdict...</p>
-              </>
-            )}
-          </>
-        )}
-        {!isAnalyzing && currentStep === completedTarget + 1 && (
-          <p className="text-emerald-450 font-semibold">
-            [SUCCESS] Analysis completed. Final result loaded and verified.
-          </p>
-        )}
+              )}
+              {isAnalyzing && currentStep === 3 && (
+                <>
+                  <p className="text-green-400/90">[XAI] Running attribution algorithm...</p>
+                  <p className="text-[#C5A880]">[TAVILY] Generating search queries for verification...</p>
+                  <p className="text-[#C5A880]">[EVIDENCE] Retrieving trusted sources...</p>
+                  <p className="text-blue-400/90 flex items-center">
+                    <span className="animate-pulse mr-2">●</span> [GEMINI] Analyzing evidence for final verdict...
+                  </p>
+                </>
+              )}
+            </>
+          ) : (
+            <>
+              {isAnalyzing && currentStep === 2 && (
+                <p className="text-green-400/90 flex items-center"><span className="animate-spin mr-2">◒</span> [MODEL 1] Evaluating BERT transformer model on sequence...</p>
+              )}
+              {isAnalyzing && currentStep === 3 && (
+                <p className="text-green-400/90 flex items-center"><span className="animate-spin mr-2">◒</span> [MODEL 2] Running DistilBERT token evaluations...</p>
+              )}
+              {isAnalyzing && currentStep === 4 && (
+                <p className="text-green-400/90 flex items-center"><span className="animate-spin mr-2">◒</span> [MODEL 3] Forwarding RoBERTa embedding matrix weights...</p>
+              )}
+              {isAnalyzing && currentStep === 5 && (
+                <p className="text-[#C5A880] font-bold flex items-center">
+                  <span className="animate-pulse mr-2">●</span> [VOTING] Aggregating results. Evaluating consensus...
+                </p>
+              )}
+              {isAnalyzing && currentStep === 6 && (
+                <>
+                  <p className="text-green-400/90">[XAI] Running SHAP/LIME feature attributions...</p>
+                  <p className="text-[#C5A880]">[TAVILY] Generating search queries...</p>
+                  <p className="text-[#C5A880]">[EVIDENCE] Retrieving trusted sources...</p>
+                  <p className="text-blue-400/90 flex items-center">
+                    <span className="animate-pulse mr-2">●</span> [GEMINI] Analyzing evidence for final verdict...
+                  </p>
+                </>
+              )}
+            </>
+          )}
+          {!isAnalyzing && currentStep === completedTarget + 1 && (
+            <p className="text-green-400 font-bold mt-2 flex items-center">
+              <CheckCircle size={14} className="mr-2" /> [SUCCESS] Analysis completed. Final result loaded and verified.
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
