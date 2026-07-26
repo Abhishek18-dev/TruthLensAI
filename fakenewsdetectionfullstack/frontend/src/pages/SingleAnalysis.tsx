@@ -8,11 +8,14 @@ import {
   AlertTriangle,
   Info,
   Clock,
-  Upload
+  Upload,
+  ShieldCheck,
+  Sparkles
 } from "lucide-react";
 import { truthLensApi } from "../services/api";
 import type { PredictResponse } from "../services/api";
 import Pipeline from "../components/Pipeline";
+import VerificationPanel from "../components/VerificationPanel";
 
 export const SingleAnalysis: React.FC = () => {
   const [predictionMode, setPredictionMode] = useState<"production" | "research">("production");
@@ -107,12 +110,12 @@ export const SingleAnalysis: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 grid-bg">
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 grid-bg">
       
       {/* Header Title & Prediction Mode Toggle */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight text-navy-950 dark:text-white transition-colors">
+          <h1 className="text-3xl font-extrabold tracking-tight text-navy-950 dark:text-white transition-colors">
             Single Document Analysis
           </h1>
           <p className="text-sm text-navy-600 dark:text-navy-200 transition-colors">
@@ -155,10 +158,10 @@ export const SingleAnalysis: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Main Left Columns: Text Input & Pipeline */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-5">
           
           {/* Article Text Box Card */}
           <div className="glass-panel rounded-2xl p-6 border border-beige-200 dark:border-navy-700 transition-colors">
@@ -176,7 +179,7 @@ export const SingleAnalysis: React.FC = () => {
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Paste the full text of the news article here (e.g. 'BREAKING: Exclusive details revealed regarding...')"
-              className="w-full h-64 p-4 rounded-xl border border-beige-300 dark:border-navy-750 bg-white/50 dark:bg-navy-900/60 text-navy-950 dark:text-navy-50 placeholder-navy-400 dark:placeholder-navy-300 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-gold-500 focus:border-transparent transition-all text-sm font-sans resize-none"
+              className="w-full h-44 p-4 rounded-xl border border-beige-300 dark:border-navy-750 bg-white/50 dark:bg-navy-900/60 text-navy-950 dark:text-navy-50 placeholder-navy-400 dark:placeholder-navy-300 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-gold-500 focus:border-transparent transition-all text-sm font-sans resize-none"
               disabled={isLoading}
             />
 
@@ -249,11 +252,11 @@ export const SingleAnalysis: React.FC = () => {
         </div>
 
         {/* Right Column: Result displays and system diagnostics */}
-        <div className="space-y-6">
+        <div className="space-y-5">
           
           {/* Production Mode Results Display */}
           {result && result.mode === "production" && (
-            <div className={`rounded-2xl p-6 border shadow-lg transition-all duration-500 animate-fadeIn ${
+            <div className={`rounded-2xl p-5 border shadow-xl transition-all duration-500 animate-fadeIn ${
               result.prediction === "Fake"
                 ? "bg-gradient-to-br from-red-50 to-red-105/50 dark:from-red-950/70 dark:to-red-900/40 border-red-200 dark:border-red-900 text-red-950 dark:text-red-100"
                 : "bg-gradient-to-br from-emerald-50 to-teal-50/50 dark:from-emerald-950/70 dark:to-teal-950/45 border-emerald-200 dark:border-emerald-900 text-emerald-950 dark:text-emerald-100"
@@ -275,7 +278,7 @@ export const SingleAnalysis: React.FC = () => {
                 <div className={`p-2 rounded-xl ${
                   result.prediction === "Fake" ? "bg-red-100 dark:bg-red-900/60 text-red-700 dark:text-red-200" : "bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-200"
                 }`}>
-                  <AlertTriangle size={24} />
+                  <ShieldCheck size={24} />
                 </div>
               </div>
 
@@ -317,7 +320,7 @@ export const SingleAnalysis: React.FC = () => {
           {result && result.mode === "production" && (
             <div className="glass-panel rounded-2xl p-6 border border-beige-200 dark:border-navy-700 animate-fadeIn transition-colors">
               <h3 className="text-sm font-extrabold text-navy-950 dark:text-beige-100 uppercase tracking-wider mb-4 flex items-center space-x-2">
-                <Info size={16} className="text-gold-500 dark:text-gold-400" />
+                <Sparkles size={16} className="text-gold-500 dark:text-gold-400" />
                 <span>Explainable AI (XAI) Attribution</span>
               </h3>
 
@@ -328,7 +331,7 @@ export const SingleAnalysis: React.FC = () => {
                     {result.keywords?.map((keyword, index) => (
                       <span
                         key={index}
-                        className="px-2.5 py-1 bg-beige-100 dark:bg-navy-800 text-navy-800 dark:text-beige-100 rounded-lg text-xs font-semibold uppercase tracking-wider border border-beige-300 dark:border-navy-700"
+                        className="px-3 py-1.5 bg-gradient-to-r from-beige-50 to-beige-100 dark:from-navy-800 dark:to-navy-850 text-navy-800 dark:text-beige-100 rounded-full text-[11px] font-bold uppercase tracking-wider border border-beige-200 dark:border-navy-600 shadow-sm"
                       >
                         {keyword}
                       </span>
@@ -347,7 +350,7 @@ export const SingleAnalysis: React.FC = () => {
 
           {/* Research Mode Results Display */}
           {result && result.mode === "research" && (
-            <div className={`rounded-2xl p-6 border shadow-lg transition-all duration-500 animate-fadeIn ${
+            <div className={`rounded-2xl p-5 border shadow-xl transition-all duration-500 animate-fadeIn ${
               result.final_prediction === "Fake"
                 ? "bg-gradient-to-br from-red-50 to-red-105/50 dark:from-red-950/70 dark:to-red-900/40 border-red-200 dark:border-red-900 text-red-950 dark:text-red-100"
                 : "bg-gradient-to-br from-emerald-50 to-teal-50/50 dark:from-emerald-950/70 dark:to-teal-950/45 border-emerald-200 dark:border-emerald-900 text-emerald-950 dark:text-emerald-100"
@@ -369,7 +372,7 @@ export const SingleAnalysis: React.FC = () => {
                 <div className={`p-2 rounded-xl ${
                   result.final_prediction === "Fake" ? "bg-red-100 dark:bg-red-900/60 text-red-700 dark:text-red-200" : "bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-200"
                 }`}>
-                  <AlertTriangle size={24} />
+                  <ShieldCheck size={24} />
                 </div>
               </div>
 
@@ -492,16 +495,21 @@ export const SingleAnalysis: React.FC = () => {
             </div>
           )}
 
+          {/* Verification Panel */}
+          {result && result.verification && (
+            <VerificationPanel verification={result.verification} />
+          )}
+
           {/* Backend System Integration Status Card */}
-          <div className="glass-panel rounded-2xl p-6 border border-beige-200 dark:border-navy-700 transition-colors">
-            <h3 className="text-sm font-extrabold text-navy-950 dark:text-beige-100 uppercase tracking-wider mb-4 flex items-center space-x-2">
+          <div className="glass-panel rounded-2xl p-4 border border-beige-200 dark:border-navy-700 transition-colors">
+            <h3 className="text-xs font-extrabold text-navy-950 dark:text-beige-100 uppercase tracking-wider mb-2 flex items-center space-x-2">
               <Server size={15} className="text-navy-600 dark:text-gold-400 animate-pulse" />
               <span>Backend Diagnostics Portal</span>
             </h3>
 
-            <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-2">
               {/* Frontend item */}
-              <div className="flex items-center justify-between p-2.5 rounded-lg bg-navy-50 dark:bg-navy-900/40 border border-navy-100 dark:border-navy-850">
+              <div className="flex items-center justify-between p-2 rounded-lg bg-navy-50 dark:bg-navy-900/40 border border-navy-100 dark:border-navy-850">
                 <span className="text-xs font-semibold text-navy-800 dark:text-navy-200">React Frontend</span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-250 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-900">
                   <Check size={10} className="mr-1" />
@@ -510,7 +518,7 @@ export const SingleAnalysis: React.FC = () => {
               </div>
 
               {/* FastAPI gateway */}
-              <div className="flex items-center justify-between p-2.5 rounded-lg bg-navy-50 dark:bg-navy-900/40 border border-navy-100 dark:border-navy-850">
+              <div className="flex items-center justify-between p-2 rounded-lg bg-navy-50 dark:bg-navy-900/40 border border-navy-100 dark:border-navy-850">
                 <span className="text-xs font-semibold text-navy-800 dark:text-navy-200">FastAPI Gateway</span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-250 dark:bg-emerald-950/60 dark:text-emerald-450 dark:border-emerald-900">
                   <Check size={10} className="mr-1" />
@@ -519,7 +527,7 @@ export const SingleAnalysis: React.FC = () => {
               </div>
 
               {/* Python AI engine */}
-              <div className="flex items-center justify-between p-2.5 rounded-lg bg-navy-50 dark:bg-navy-900/40 border border-navy-100 dark:border-navy-850">
+              <div className="flex items-center justify-between p-2 rounded-lg bg-navy-50 dark:bg-navy-900/40 border border-navy-100 dark:border-navy-850">
                 <span className="text-xs font-semibold text-navy-800 dark:text-navy-200">Python AI Engine</span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-250 dark:bg-emerald-950/60 dark:text-emerald-450 dark:border-emerald-900">
                   <Check size={10} className="mr-1" />
@@ -528,7 +536,7 @@ export const SingleAnalysis: React.FC = () => {
               </div>
 
               {/* Inference Pipeline status */}
-              <div className="flex items-center justify-between p-2.5 rounded-lg bg-navy-50 dark:bg-navy-900/40 border border-navy-100 dark:border-navy-850">
+              <div className="flex items-center justify-between p-2 rounded-lg bg-navy-50 dark:bg-navy-900/40 border border-navy-100 dark:border-navy-850">
                 <span className="text-xs font-semibold text-navy-800 dark:text-navy-200">Model Inference (PyTorch/Colab)</span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-400 dark:border-amber-900">
                   <Clock size={10} className="mr-1" />

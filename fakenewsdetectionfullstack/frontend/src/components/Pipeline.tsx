@@ -7,7 +7,10 @@ import {
   Eye, 
   CheckCircle,
   ArrowRight,
-  ArrowDown
+  ArrowDown,
+  Search,
+  Database,
+  ShieldCheck
 } from "lucide-react";
 
 interface PipelineProps {
@@ -48,7 +51,28 @@ export const Pipeline: React.FC<PipelineProps> = ({ currentStep, isAnalyzing, mo
     },
     {
       id: 5,
-      title: "Prediction",
+      title: "Tavily Search",
+      subtitle: "Query Gen",
+      icon: Search,
+      phase: 3,
+    },
+    {
+      id: 6,
+      title: "Evidence",
+      subtitle: "Retrieval",
+      icon: Database,
+      phase: 3,
+    },
+    {
+      id: 7,
+      title: "Verification",
+      subtitle: "Gemini AI",
+      icon: ShieldCheck,
+      phase: 3,
+    },
+    {
+      id: 8,
+      title: "Final Verdict",
       subtitle: "Classification",
       icon: CheckCircle,
       phase: 4,
@@ -107,7 +131,28 @@ export const Pipeline: React.FC<PipelineProps> = ({ currentStep, isAnalyzing, mo
     },
     {
       id: 8,
-      title: "Prediction",
+      title: "Tavily Search",
+      subtitle: "Query Gen",
+      icon: Search,
+      phase: 6,
+    },
+    {
+      id: 9,
+      title: "Evidence",
+      subtitle: "Retrieval",
+      icon: Database,
+      phase: 6,
+    },
+    {
+      id: 10,
+      title: "Verification",
+      subtitle: "Gemini AI",
+      icon: ShieldCheck,
+      phase: 6,
+    },
+    {
+      id: 11,
+      title: "Final Verdict",
       subtitle: "Classification",
       icon: CheckCircle,
       phase: 7,
@@ -134,7 +179,7 @@ export const Pipeline: React.FC<PipelineProps> = ({ currentStep, isAnalyzing, mo
       </div>
 
       {/* Pipeline Grid/Flow */}
-      <div className={`grid grid-cols-1 ${mode === "production" ? "md:grid-cols-5" : "md:grid-cols-8"} gap-2 relative`}>
+      <div className={`grid grid-cols-1 ${mode === "production" ? "md:grid-cols-8" : "md:grid-cols-11"} gap-2 relative`}>
         {steps.map((step, idx) => {
           const Icon = step.icon;
           
@@ -228,7 +273,12 @@ export const Pipeline: React.FC<PipelineProps> = ({ currentStep, isAnalyzing, mo
               <p className="text-beige-300 animate-pulse">[MODEL] Forwarding RoBERTa embedding matrix layer weights...</p>
             )}
             {isAnalyzing && currentStep === 3 && (
-              <p className="text-beige-300 animate-pulse">[XAI EXPLANATION] Running attribution algorithm to extract keyword triggers...</p>
+              <>
+                <p className="text-beige-300 animate-pulse">[XAI EXPLANATION] Running attribution algorithm to extract keyword triggers...</p>
+                <p className="text-beige-300 animate-pulse">[TAVILY] Generating search queries for verification...</p>
+                <p className="text-beige-300 animate-pulse">[EVIDENCE] Retrieving trusted sources and context...</p>
+                <p className="text-beige-300 animate-pulse">[GEMINI] Analyzing evidence for final verdict...</p>
+              </>
             )}
           </>
         ) : (
@@ -248,9 +298,14 @@ export const Pipeline: React.FC<PipelineProps> = ({ currentStep, isAnalyzing, mo
               </p>
             )}
             {isAnalyzing && currentStep === 6 && (
-              <p className="text-beige-300 animate-pulse">
-                [XAI EXPLANATION] Running SHAP/LIME feature attributions to fetch keywords...
-              </p>
+              <>
+                <p className="text-beige-300 animate-pulse">
+                  [XAI EXPLANATION] Running SHAP/LIME feature attributions to fetch keywords...
+                </p>
+                <p className="text-beige-300 animate-pulse">[TAVILY] Generating search queries for verification...</p>
+                <p className="text-beige-300 animate-pulse">[EVIDENCE] Retrieving trusted sources and context...</p>
+                <p className="text-beige-300 animate-pulse">[GEMINI] Analyzing evidence for final verdict...</p>
+              </>
             )}
           </>
         )}

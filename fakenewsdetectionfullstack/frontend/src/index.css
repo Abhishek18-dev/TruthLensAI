@@ -72,6 +72,22 @@ body {
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
+/* Accent glassmorphism for AI Verification panel */
+.glass-panel-accent {
+  background: linear-gradient(145deg, #ffffff 0%, #faf8f3 100%);
+  border: 2px solid rgba(197, 168, 128, 0.3);
+  color: var(--color-brand-text-light);
+  box-shadow: 0 4px 24px 0 rgba(197, 168, 128, 0.08), 0 1px 3px rgba(10, 17, 40, 0.04);
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dark .glass-panel-accent {
+  background: linear-gradient(145deg, rgba(16, 31, 66, 0.95) 0%, rgba(12, 24, 52, 0.9) 100%);
+  border-color: rgba(197, 168, 128, 0.2);
+  color: var(--color-brand-text-dark);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(197, 168, 128, 0.1);
+}
+
 /* Dynamic dot grid patterns */
 .grid-bg {
   background-image: radial-gradient(var(--color-brand-border-beige) 1.2px, transparent 1.2px);

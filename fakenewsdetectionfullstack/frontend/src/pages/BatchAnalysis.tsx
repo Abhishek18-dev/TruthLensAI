@@ -9,6 +9,7 @@ interface BatchItemResult {
   prediction: "Fake" | "Real";
   confidence: number;
   status: string;
+  verdict?: string;
 }
 
 export const BatchAnalysis: React.FC = () => {
@@ -25,27 +26,69 @@ export const BatchAnalysis: React.FC = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Simple CSV Line Parser
+  // Robust CSV Line Parser
   const parseCSV = (csvText: string): string[] => {
-    const lines = csvText.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
-    let startIndex = 0;
+    const rows: string[][] = [];
+    let currentRow: string[] = [];
+    let currentCell = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < csvText.length; i++) {
+      const char = csvText[i];
+      const nextChar = csvText[i + 1];
+
+      if (inQuotes) {
+        if (char === '"' && nextChar === '"') {
+          currentCell += '"';
+          i++; 
+        } else if (char === '"') {
+          inQuotes = false;
+        } else {
+          currentCell += char;
+        }
+      } else {
+        if (char === '"') {
+          inQuotes = true;
+        } else if (char === ',') {
+          currentRow.push(currentCell);
+          currentCell = '';
+        } else if (char === '\n' || (char === '\r' && nextChar === '\n')) {
+          currentRow.push(currentCell);
+          if (currentRow.some(c => c.trim().length > 0)) {
+            rows.push(currentRow);
+          }
+          currentRow = [];
+          currentCell = '';
+          if (char === '\r') i++;
+        } else {
+          currentCell += char;
+        }
+      }
+    }
     
-    // Skip headers if present
-    if (lines.length > 0) {
-      const lowerHeader = lines[0].toLowerCase();
-      if (lowerHeader.includes("text") || lowerHeader.includes("title") || lowerHeader.includes("article") || lowerHeader.includes("content")) {
-        startIndex = 1;
+    if (currentCell !== '' || currentRow.length > 0) {
+      currentRow.push(currentCell);
+      if (currentRow.some(c => c.trim().length > 0)) {
+        rows.push(currentRow);
       }
     }
 
-    return lines.slice(startIndex, 15).map(line => {
-      // Basic quote stripping
-      let clean = line;
-      if (clean.startsWith('"') && clean.endsWith('"')) {
-        clean = clean.slice(1, -1);
-      }
-      return clean.replace(/""/g, '"');
-    });
+    if (rows.length === 0) return [];
+    
+    let textColIndex = 0;
+    let startIndex = 0;
+    const headerRow = rows[0].map(c => c.toLowerCase().trim());
+    const possibleHeaders = ["text", "title", "article", "content"];
+    const foundIdx = headerRow.findIndex(h => possibleHeaders.includes(h));
+    
+    if (foundIdx !== -1) {
+      textColIndex = foundIdx;
+      startIndex = 1;
+    }
+
+    return rows.slice(startIndex, startIndex + 15)
+      .map(row => row[textColIndex] || "")
+      .filter(cell => cell.trim().length > 0);
   };
 
   // Simple JSON Parser
@@ -165,6 +208,7 @@ export const BatchAnalysis: React.FC = () => {
           prediction: predLabel,
           confidence: confidenceScore,
           status: res.status,
+          verdict: res.verification?.verdict,
         };
       });
 
@@ -194,11 +238,12 @@ export const BatchAnalysis: React.FC = () => {
   // Exporter to CSV file download
   const exportToCSV = () => {
     if (results.length === 0) return;
-    const headers = ["Article", "Prediction", "Confidence", "Status"];
+    const headers = ["Article", "Prediction", "Confidence", "Verification", "Status"];
     const rows = results.map(r => [
       `"${r.excerpt.replace(/"/g, '""')}"`,
       r.prediction,
       `${r.confidence}%`,
+      `"${r.verdict || "N/A"}"`,
       r.status
     ]);
     
@@ -395,6 +440,7 @@ export const BatchAnalysis: React.FC = () => {
                       <th className="px-4 py-2 text-left text-[10px] font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">Article Segment</th>
                       <th className="px-4 py-2 text-left text-[10px] font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">Result</th>
                       <th className="px-4 py-2 text-left text-[10px] font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">Confidence</th>
+                      <th className="px-4 py-2 text-left text-[10px] font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">Verification</th>
                       <th className="px-4 py-2 text-left text-[10px] font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">Status</th>
                     </tr>
                   </thead>
@@ -413,6 +459,15 @@ export const BatchAnalysis: React.FC = () => {
                           </span>
                         </td>
                         <td className="px-4 py-3 text-xs font-bold text-navy-800 dark:text-navy-200">{r.confidence}%</td>
+                        <td className="px-4 py-3 text-xs">
+                          {r.verdict ? (
+                            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wide bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
+                              {r.verdict}
+                            </span>
+                          ) : (
+                            <span className="text-navy-400 dark:text-navy-500">-</span>
+                          )}
+                        </td>
                         <td className="px-4 py-3 text-xs">
                           <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wide bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900">
                             {r.status}
