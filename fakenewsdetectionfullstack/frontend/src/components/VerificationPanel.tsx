@@ -1,5 +1,5 @@
 import React from "react";
-import { ShieldCheck, Target, Search, FileText, CheckCircle2, AlertTriangle, XCircle, Info } from "lucide-react";
+import { Target, Search, FileText, CheckCircle2, AlertTriangle, XCircle, Info, FileSearch } from "lucide-react";
 import type { VerificationResponse } from "../services/api";
 import { SourceBadge } from "./SourceBadge";
 
@@ -13,9 +13,10 @@ const getVerdictStyles = (verdict: string) => {
   if (v.includes("verified") || v.includes("true") || v.includes("real")) {
     return {
       container: "from-emerald-500/5 to-emerald-500/10 border-emerald-200/50 dark:border-emerald-900/50",
-      badge: "bg-emerald-500 text-white shadow-emerald-500/30",
+      badge: "bg-emerald-500 text-white shadow-emerald-500/30 border border-emerald-400 dark:border-emerald-600",
       bar: "bg-gradient-to-r from-emerald-400 to-emerald-600",
       icon: "text-emerald-500",
+      bgIcon: "bg-emerald-100 dark:bg-emerald-900/30",
       IconComponent: CheckCircle2,
     };
   }
@@ -23,9 +24,10 @@ const getVerdictStyles = (verdict: string) => {
   if (v.includes("false") || v.includes("fake")) {
     return {
       container: "from-red-500/5 to-red-500/10 border-red-200/50 dark:border-red-900/50",
-      badge: "bg-red-500 text-white shadow-red-500/30",
+      badge: "bg-red-500 text-white shadow-red-500/30 border border-red-400 dark:border-red-600",
       bar: "bg-gradient-to-r from-red-400 to-red-600",
       icon: "text-red-500",
+      bgIcon: "bg-red-100 dark:bg-red-900/30",
       IconComponent: XCircle,
     };
   }
@@ -33,19 +35,21 @@ const getVerdictStyles = (verdict: string) => {
   if (v.includes("misleading") || v.includes("partially")) {
     return {
       container: "from-amber-500/5 to-amber-500/10 border-amber-200/50 dark:border-amber-900/50",
-      badge: "bg-amber-500 text-white shadow-amber-500/30",
+      badge: "bg-amber-500 text-white shadow-amber-500/30 border border-amber-400 dark:border-amber-600",
       bar: "bg-gradient-to-r from-amber-400 to-amber-600",
       icon: "text-amber-500",
+      bgIcon: "bg-amber-100 dark:bg-amber-900/30",
       IconComponent: AlertTriangle,
     };
   }
 
   // Default: Insufficient Evidence / Unknown
   return {
-    container: "from-slate-500/5 to-slate-500/10 border-slate-200/50 dark:border-slate-800/50",
-    badge: "bg-slate-600 text-white shadow-slate-500/30",
-    bar: "bg-gradient-to-r from-slate-400 to-slate-600",
-    icon: "text-slate-500",
+    container: "from-zinc-500/5 to-zinc-500/10 border-zinc-200/50 dark:border-zinc-800/50",
+    badge: "bg-zinc-600 text-white shadow-zinc-500/30 border border-zinc-500",
+    bar: "bg-gradient-to-r from-zinc-400 to-zinc-600",
+    icon: "text-zinc-500",
+    bgIcon: "bg-zinc-100 dark:bg-zinc-800",
     IconComponent: Info,
   };
 };
@@ -55,50 +59,44 @@ export const VerificationPanel: React.FC<VerificationPanelProps> = ({ verificati
   const VerdictIcon = styles.IconComponent;
 
   return (
-    <div className={`glass-panel-accent rounded-3xl p-6 lg:p-8 animate-fadeIn transition-colors bg-gradient-to-br ${styles.container} backdrop-blur-xl border shadow-xl relative overflow-hidden`}>
+    <div className={`premium-card p-6 lg:p-10 animate-fadeIn transition-colors bg-gradient-to-br ${styles.container} backdrop-blur-xl relative overflow-hidden group`}>
       {/* Decorative background element */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 dark:bg-white/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
-
-      {/* Section Header */}
-      <div className="flex items-center space-x-3 mb-8 pb-4 border-b border-[#E8E2D5] dark:border-[#1B2A4A] relative z-10">
-        <div className={`p-2.5 rounded-xl bg-white dark:bg-[#101F42] shadow-sm ${styles.icon}`}>
-          <ShieldCheck size={24} />
-        </div>
-        <div>
-          <h3 className="text-xl font-extrabold text-[#1A2536] dark:text-[#F4EFE6] tracking-tight">AI Agent Investigation</h3>
-          <p className="text-sm font-medium text-[#1A2536]/60 dark:text-[#F4EFE6]/60">Comprehensive RAG verification report</p>
-        </div>
-      </div>
+      <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 dark:bg-white/5 rounded-full blur-[80px] -mr-20 -mt-20 pointer-events-none transition-transform duration-1000 group-hover:scale-110"></div>
 
       <div className="space-y-8 relative z-10">
+        
         {/* Verdict & Confidence Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white/40 dark:bg-[#0A1128]/40 p-6 rounded-2xl border border-white/50 dark:border-[#1B2A4A]/50 shadow-inner">
-          {/* Verdict Badge */}
-          <div className="flex flex-col justify-center space-y-2">
-            <span className="text-xs font-bold text-[#1A2536]/60 dark:text-[#F4EFE6]/60 uppercase tracking-widest flex items-center">
-              <Target size={12} className="mr-1.5" /> Final Verdict
-            </span>
-            <div className="flex items-center">
-              <span className={`flex items-center text-lg lg:text-xl font-extrabold uppercase px-5 py-2.5 rounded-xl shadow-lg ${styles.badge} tracking-wide`}>
-                <VerdictIcon size={20} className="mr-2" />
+        <div className="flex flex-col lg:flex-row gap-6">
+          
+          {/* Verdict Card */}
+          <div className="flex-1 bg-zinc-50/80 dark:bg-zinc-900/80 p-6 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm flex items-center gap-5 relative overflow-hidden">
+            <div className={`p-3.5 rounded-xl ${styles.bgIcon} ${styles.icon}`}>
+              <VerdictIcon size={28} />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest block mb-1">
+                Final Verdict
+              </span>
+              <span className={`inline-flex items-center text-sm font-bold uppercase px-3 py-1 rounded-md shadow-sm ${styles.badge} tracking-wider`}>
                 {verification.verdict}
               </span>
             </div>
           </div>
 
           {/* Verification Confidence */}
-          <div className="flex flex-col justify-center space-y-3">
-            <div className="flex justify-between items-end">
-              <span className="text-xs font-bold text-[#1A2536]/60 dark:text-[#F4EFE6]/60 uppercase tracking-widest">
+          <div className="flex-1 bg-zinc-50/80 dark:bg-zinc-900/80 p-6 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm flex flex-col justify-center">
+            <div className="flex justify-between items-end mb-3">
+              <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest flex items-center">
+                <Target size={14} className="mr-1.5" />
                 Confidence Score
               </span>
-              <span className="text-2xl font-black text-[#1A2536] dark:text-[#F4EFE6] leading-none">
+              <span className="text-2xl font-bold text-zinc-900 dark:text-zinc-50 leading-none">
                 {verification.confidence}%
               </span>
             </div>
-            <div className="w-full bg-[#E8E2D5]/50 dark:bg-[#101F42]/80 rounded-full h-3.5 shadow-inner overflow-hidden relative">
+            <div className="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-3 shadow-inner overflow-hidden relative">
               <div
-                className={`h-full rounded-full transition-all duration-1000 ${styles.bar} relative overflow-hidden`}
+                className={`h-full rounded-full transition-all duration-1000 ease-out ${styles.bar} relative overflow-hidden`}
                 style={{ width: `${Math.min(verification.confidence, 100)}%` }}
               >
                 {/* Shimmer effect */}
@@ -109,48 +107,59 @@ export const VerificationPanel: React.FC<VerificationPanelProps> = ({ verificati
         </div>
 
         {/* Divider */}
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-[#E8E2D5] dark:via-[#1B2A4A] to-transparent"></div>
+        <div className="h-px w-full bg-gradient-to-r from-zinc-200 via-zinc-200 to-transparent dark:from-zinc-800 dark:via-zinc-800 dark:to-transparent opacity-70"></div>
 
-        {/* Summary */}
-        <div>
-          <span className="flex items-center text-sm font-bold text-[#1A2536] dark:text-[#F4EFE6] mb-3">
-            <FileText size={16} className="mr-2 text-[#C5A880]" />
-            Executive Summary
-          </span>
-          <p className="text-base font-medium text-[#1A2536]/90 dark:text-[#F4EFE6]/90 leading-relaxed bg-white/60 dark:bg-[#101F42]/60 p-5 rounded-2xl border border-[#E8E2D5]/50 dark:border-[#1B2A4A]/50 shadow-sm backdrop-blur-sm">
-            {verification.summary}
-          </p>
-        </div>
+        {/* Content Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          <div className="space-y-8">
+            {/* Summary */}
+            <div>
+              <h4 className="flex items-center text-xs font-bold text-zinc-900 dark:text-zinc-50 uppercase tracking-widest mb-3">
+                <FileText size={16} className="mr-2 text-zinc-500" />
+                Executive Summary
+              </h4>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed bg-zinc-50/50 dark:bg-zinc-900/50 p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                {verification.summary}
+              </p>
+            </div>
 
-        {/* Reasoning */}
-        <div>
-          <span className="flex items-center text-sm font-bold text-[#1A2536] dark:text-[#F4EFE6] mb-3">
-            <Search size={16} className="mr-2 text-[#C5A880]" />
-            Agentic Reasoning Process
-          </span>
-          <div className="bg-[#FAF7F0]/80 dark:bg-[#0A1128]/80 p-5 rounded-2xl border border-[#E8E2D5] dark:border-[#1B2A4A] shadow-inner">
-            <p className="text-sm text-[#1A2536]/80 dark:text-[#F4EFE6]/80 leading-relaxed whitespace-pre-line font-medium">
-              {verification.reasoning}
-            </p>
+            {/* Trusted Sources */}
+            {verification.sources.length > 0 && (
+              <div>
+                <h4 className="flex items-center text-xs font-bold text-zinc-900 dark:text-zinc-50 uppercase tracking-widest mb-3">
+                  <span className="flex items-center justify-center bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900 rounded-full w-5 h-5 mr-2 text-[10px] shadow-sm">
+                    {verification.sources.length}
+                  </span>
+                  Verified Sources
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2.5">
+                  {verification.sources.map((source, index) => (
+                    <SourceBadge key={index} source={source} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        </div>
 
-        {/* Trusted Sources */}
-        {verification.sources.length > 0 && (
-          <div className="pt-2">
-            <span className="flex items-center text-sm font-bold text-[#1A2536] dark:text-[#F4EFE6] mb-4">
-              <span className="flex items-center justify-center bg-[#C5A880]/20 text-[#9A7B56] dark:text-[#C5A880] rounded-lg w-6 h-6 mr-2 text-xs">
-                {verification.sources.length}
-              </span>
-              Verified Sources
-            </span>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {verification.sources.map((source, index) => (
-                <SourceBadge key={index} source={source} />
-              ))}
+          {/* Reasoning */}
+          <div>
+            <h4 className="flex items-center text-xs font-bold text-zinc-900 dark:text-zinc-50 uppercase tracking-widest mb-3">
+              <Search size={16} className="mr-2 text-zinc-500" />
+              Agentic Reasoning Process
+            </h4>
+            <div className="bg-zinc-50/80 dark:bg-zinc-900/80 p-6 rounded-2xl border-l-4 border-l-zinc-500 border-y border-y-zinc-200 border-r border-r-zinc-200 dark:border-y-zinc-800 dark:border-r-zinc-800 shadow-sm relative">
+              <div className="absolute top-4 right-4 text-zinc-200 dark:text-zinc-800">
+                <FileSearch size={36} />
+              </div>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-line relative z-10">
+                {verification.reasoning}
+              </p>
             </div>
           </div>
-        )}
+
+        </div>
+
       </div>
     </div>
   );
