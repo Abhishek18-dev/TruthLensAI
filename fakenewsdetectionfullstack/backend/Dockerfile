@@ -2,12 +2,11 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copy backend requirements
+# Install Python dependencies
 COPY backend/requirements.txt .
-
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Download NLTK data inside image
+# Download NLTK data
 RUN python -m nltk.downloader \
     -d /usr/local/share/nltk_data \
     stopwords \
@@ -16,7 +15,7 @@ RUN python -m nltk.downloader \
     averaged_perceptron_tagger \
     averaged_perceptron_tagger_eng
 
-# Copy whole project
+# Copy project
 COPY . .
 
 ENV PYTHONPATH=/app
