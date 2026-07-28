@@ -4,6 +4,15 @@
 
 import re
 import nltk
+import os
+
+nltk.data.path.insert(
+    0,
+    os.environ.get(
+        "NLTK_DATA",
+        os.path.join(os.path.dirname(__file__), "../../nltk_data"),
+    ),
+)
 
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords, wordnet
