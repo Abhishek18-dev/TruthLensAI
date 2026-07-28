@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from ai.utils.hf_downloader import HFDownloader
+
 from dataclasses import dataclass
 from pathlib import Path
 from threading import Lock
@@ -68,8 +70,10 @@ class ModelLoader:
             model_path = TRANSFORMER_MODEL_PATHS.get(model_key)
             if model_path is None:
                 raise ValueError(f"Unsupported transformer model: {model_name}")
-            if not model_path.exists():
-                raise FileNotFoundError(f"Transformer model path not found: {model_path}")
+            HFDownloader.ensure_transformer(
+                model_key,
+                model_path,
+            )
 
             self._ensure_transformers_available()
             tokenizer = load_tokenizer(model_key)
@@ -122,8 +126,20 @@ class ModelLoader:
             if self._ml_model is not None:
                 return self._ml_model
 
-            if not ML_MODEL_PATH.exists():
-                raise FileNotFoundError(f"ML model path not found: {ML_MODEL_PATH}")
+            HFDownloader.ensure_ml_file(
+                "best_ml_model.pkl",
+                ML_MODEL_PATH,
+            )
+            
+            HFDownloader.ensure_ml_file(
+                "tfidf_vectorizer.pkl",
+                TFIDF_VECTORIZER_PATH,
+            )
+            
+            HFDownloader.ensure_ml_file(
+                "best_model_parameters.json",
+                ML_PARAMETERS_PATH,
+            )
             if not TFIDF_VECTORIZER_PATH.exists():
                 raise FileNotFoundError(f"TF-IDF vectorizer path not found: {TFIDF_VECTORIZER_PATH}")
 
@@ -159,8 +175,10 @@ class ModelLoader:
             model_path = DL_MODEL_PATHS.get(model_key)
             if model_path is None:
                 raise ValueError(f"Unsupported DL model: {model_name}")
-            if not model_path.exists():
-                raise FileNotFoundError(f"DL model path not found: {model_path}")
+            HFDownloader.ensure_dl_file(
+                model_path.name,
+                model_path,
+            )
 
             try:
                 import torch
