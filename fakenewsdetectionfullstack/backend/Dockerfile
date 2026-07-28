@@ -2,10 +2,12 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY fakenewsdetectionfullstack/backend/requirements.txt .
+# Copy backend requirements
+COPY backend/requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Download NLTK data inside image
 RUN python -m nltk.downloader \
     -d /usr/local/share/nltk_data \
     stopwords \
@@ -14,7 +16,8 @@ RUN python -m nltk.downloader \
     averaged_perceptron_tagger \
     averaged_perceptron_tagger_eng
 
-COPY fakenewsdetectionfullstack /app
+# Copy whole project
+COPY . .
 
 ENV PYTHONPATH=/app
 ENV NLTK_DATA=/usr/local/share/nltk_data
