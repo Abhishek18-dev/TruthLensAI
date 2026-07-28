@@ -4,12 +4,6 @@
 
 import re
 import nltk
-import os
-
-nltk.data.path.append("/opt/render/nltk_data")
-nltk.data.path.append(os.path.expanduser("~/nltk_data"))
-nltk.data.path.append("/usr/local/share/nltk_data")
-nltk.data.path.append("/usr/share/nltk_data")
 
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords, wordnet
@@ -22,11 +16,11 @@ def _ensure_nltk_resource(resource_path: str, download_name: str) -> None:
         nltk.data.find(resource_path)
     except LookupError:
         try:
-            nltk.download(download_name, quiet=True)
-            nltk.data.find(resource_path)
-        except Exception as exc:
+            nltk.data.find(f"{resource_path}.zip")
+        except LookupError as exc:
             raise RuntimeError(
-                f"Required NLTK resource is missing: {resource_path}"
+                f"Required local NLTK resource is missing: {resource_path}. "
+                "Download it during environment provisioning; runtime downloads are disabled."
             ) from exc
 
 
