@@ -18,16 +18,15 @@ from nltk import pos_tag
 
 
 def _ensure_nltk_resource(resource_path: str, download_name: str) -> None:
-
     try:
         nltk.data.find(resource_path)
     except LookupError:
         try:
-            nltk.data.find(f"{resource_path}.zip")
-        except LookupError as exc:
+            nltk.download(download_name, quiet=True)
+            nltk.data.find(resource_path)
+        except Exception as exc:
             raise RuntimeError(
-                f"Required local NLTK resource is missing: {resource_path}. "
-                "Download it during environment provisioning; runtime downloads are disabled."
+                f"Required NLTK resource is missing: {resource_path}"
             ) from exc
 
 
