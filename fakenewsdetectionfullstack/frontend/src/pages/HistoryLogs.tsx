@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { truthLensApi } from "../services/api";
 import type { HistoryItem } from "../services/api";
-import { RefreshCw, History } from "lucide-react";
+import { RefreshCw, History, Database } from "lucide-react";
 
 export const HistoryLogs: React.FC = () => {
   const [history, setHistory] = useState<HistoryItem[]>([]);
@@ -25,31 +25,35 @@ export const HistoryLogs: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-        <div className="w-12 h-12 border-4 border-navy-700 dark:border-navy-500 border-t-gold-500 rounded-full animate-spin"></div>
-        <p className="text-sm font-semibold text-navy-800 dark:text-navy-200 animate-pulse">
-          Loading history logs...
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6 animate-fadeIn">
+        <div className="relative w-12 h-12">
+          <div className="absolute inset-0 rounded-full border-2 border-zinc-200 dark:border-zinc-800"></div>
+          <div className="absolute inset-0 rounded-full border-2 border-t-zinc-900 dark:border-t-zinc-100 border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
+        </div>
+        <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+          Loading History Logs...
         </p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 grid-bg">
+    <div className="space-y-8 animate-fadeIn">
+      
       {/* Header section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight text-navy-950 dark:text-white transition-colors flex items-center space-x-2">
-            <History size={22} className="text-navy-700 dark:text-navy-300" />
-            <span>Verification History Log</span>
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50 tracking-tight flex items-center space-x-3">
+            <History size={24} className="text-zinc-500" />
+            <span>Verification History</span>
           </h1>
-          <p className="text-sm text-navy-600 dark:text-navy-200 transition-colors">
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl">
             Review detailed record of text audits performed in current session.
           </p>
         </div>
         <button
           onClick={fetchHistory}
-          className="inline-flex items-center space-x-2 px-4 py-2 border border-beige-300 dark:border-navy-700 rounded-lg bg-white dark:bg-navy-800 text-xs font-semibold text-navy-800 dark:text-navy-100 hover:bg-beige-100 dark:hover:bg-navy-700 transition-colors shadow-sm cursor-pointer self-start"
+          className="btn-secondary self-start"
         >
           <RefreshCw size={14} />
           <span>Refresh Logs</span>
@@ -57,51 +61,58 @@ export const HistoryLogs: React.FC = () => {
       </div>
 
       {/* History Table */}
-      <div className="glass-panel rounded-2xl p-6 border border-beige-200 dark:border-navy-700 glow-navy space-y-4 transition-colors">
+      <div className="premium-card overflow-hidden">
+        <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800">
+          <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-50 tracking-tight">Audit Registry Database</h2>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-md border border-zinc-200 dark:border-zinc-700">
+            {history.length} Total Records
+          </span>
+        </div>
+
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-beige-300 dark:divide-navy-800">
-            <thead>
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-zinc-50/50 dark:bg-zinc-900/50">
               <tr>
-                <th className="px-4 py-3 text-left text-[10px] font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">Date</th>
-                <th className="px-4 py-3 text-left text-[10px] font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">Time</th>
-                <th className="px-4 py-3 text-left text-[10px] font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">Article Excerpt</th>
-                <th className="px-4 py-3 text-left text-[10px] font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">Prediction Mode</th>
-                <th className="px-4 py-3 text-left text-[10px] font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">Model Used</th>
-                <th className="px-4 py-3 text-left text-[10px] font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">Prediction</th>
-                <th className="px-4 py-3 text-left text-[10px] font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">Confidence</th>
+                <th className="px-6 py-4 font-semibold text-zinc-500 dark:text-zinc-400 text-xs">Date</th>
+                <th className="px-6 py-4 font-semibold text-zinc-500 dark:text-zinc-400 text-xs">Time</th>
+                <th className="px-6 py-4 font-semibold text-zinc-500 dark:text-zinc-400 text-xs">Article Excerpt</th>
+                <th className="px-6 py-4 font-semibold text-zinc-500 dark:text-zinc-400 text-xs">Mode</th>
+                <th className="px-6 py-4 font-semibold text-zinc-500 dark:text-zinc-400 text-xs">Model Used</th>
+                <th className="px-6 py-4 font-semibold text-zinc-500 dark:text-zinc-400 text-xs">Prediction</th>
+                <th className="px-6 py-4 font-semibold text-zinc-500 dark:text-zinc-400 text-xs">Confidence</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-beige-200 dark:divide-navy-900">
+            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
               {history.map((item) => (
-                <tr key={item.id} className="hover:bg-beige-100/50 dark:hover:bg-navy-800/40 transition-colors">
-                  <td className="px-4 py-3.5 whitespace-nowrap text-xs text-navy-700 dark:text-navy-200 font-medium">{item.date}</td>
-                  <td className="px-4 py-3.5 whitespace-nowrap text-xs text-navy-700 dark:text-navy-200 font-medium">{item.time}</td>
-                  <td className="px-4 py-3.5 text-xs text-navy-900 dark:text-navy-100 font-sans max-w-xs truncate">{item.text_snippet}</td>
-                  <td className="px-4 py-3.5 whitespace-nowrap text-xs">
-                    <span className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase border ${
-                      item.mode === "production"
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-250 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-900"
-                        : "bg-gold-50 text-gold-700 border-gold-250 dark:bg-gold-950/60 dark:text-gold-400 dark:border-gold-900"
-                    }`}>
+                <tr key={item.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors group">
+                  <td className="px-6 py-4 text-xs text-zinc-500 dark:text-zinc-400">{item.date}</td>
+                  <td className="px-6 py-4 text-xs text-zinc-500 dark:text-zinc-400">{item.time}</td>
+                  <td className="px-6 py-4 text-xs text-zinc-900 dark:text-zinc-100 font-medium max-w-[250px] truncate">{item.text_snippet}</td>
+                  <td className="px-6 py-4">
+                    <span className="badge bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 capitalize">
                       {item.mode}
                     </span>
                   </td>
-                  <td className="px-4 py-3.5 whitespace-nowrap text-xs text-navy-600 dark:text-navy-300 font-mono font-medium">{item.model_used}</td>
-                  <td className="px-4 py-3.5 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                      item.prediction === "Fake"
-                        ? "bg-red-100 text-red-800 border border-red-200 dark:bg-red-950/60 dark:text-red-450 dark:border-red-900"
-                        : "bg-emerald-100 text-emerald-800 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-450 dark:border-emerald-900"
-                    }`}>
+                  <td className="px-6 py-4 text-xs font-mono text-zinc-600 dark:text-zinc-400">{item.model_used}</td>
+                  <td className="px-6 py-4">
+                    <span className={`badge ${item.prediction === "Fake" ? "badge-danger" : "badge-success"}`}>
                       {item.prediction}
                     </span>
                   </td>
-                  <td className="px-4 py-3.5 whitespace-nowrap text-xs font-bold text-navy-800 dark:text-navy-200">{item.confidence}%</td>
+                  <td className="px-6 py-4 text-sm font-medium text-zinc-900 dark:text-zinc-100">{item.confidence}%</td>
                 </tr>
               ))}
               {history.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-xs text-navy-450 dark:text-navy-300 italic">No news evaluations logged in the audit registry database yet.</td>
+                  <td colSpan={7} className="px-6 py-16 text-center">
+                    <div className="flex flex-col items-center justify-center space-y-4">
+                      <div className="p-4 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-400">
+                        <Database size={24} />
+                      </div>
+                      <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">No news evaluations logged yet.</span>
+                      <span className="text-xs text-zinc-500 dark:text-zinc-500">Run a prediction from the dashboard to populate logs.</span>
+                    </div>
+                  </td>
                 </tr>
               )}
             </tbody>

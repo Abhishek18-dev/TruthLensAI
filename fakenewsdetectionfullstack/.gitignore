@@ -49,3 +49,5 @@ backend/.venv/
 .env
 backend/.env
 frontend/.env
+
+backend/output.json

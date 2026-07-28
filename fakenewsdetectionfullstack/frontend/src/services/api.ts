@@ -5,6 +5,19 @@ export interface ModelPrediction {
   confidence: number;
 }
 
+export interface VerificationSource {
+  name: string;
+  url: string;
+}
+
+export interface VerificationResponse {
+  verdict: string;
+  confidence: number;
+  summary: string;
+  reasoning: string;
+  sources: VerificationSource[];
+}
+
 export interface ProductionResponse {
   mode: "production";
   model: string;
@@ -13,6 +26,7 @@ export interface ProductionResponse {
   inference_time: string;
   keywords: string[];
   reason: string;
+  verification: VerificationResponse;
   status: string;
 }
 
@@ -36,6 +50,7 @@ export interface ResearchResponse {
     majority_confidence: number;
     inference_time_ms: number;
   };
+  verification: VerificationResponse;
   status: string;
 }
 
@@ -73,14 +88,49 @@ export interface AnalyticsResponse {
 }
 
 // The FastAPI backend base URL. VITE_API_URL supports deployed and Docker environments.
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000/api";
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? "/api";
 
 const client = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 300000, // 5 minute timeout for complex agentic RAG and Gemini verification
   headers: {
     "Content-Type": "application/json",
   },
 });
+
+client.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const config = error.config;
+    if (!config) return Promise.reject(error);
+
+    // Only safely retry GET requests to prevent duplicate AI inference triggers
+    const isGetRequest = config.method?.toLowerCase() === 'get';
+
+    // Initialize retry count
+    config.__retryCount = config.__retryCount || 0;
+
+    // Retry up to 2 times for network timeouts or 5xx server errors on safe methods only
+    if (isGetRequest && config.__retryCount < 2 && (error.code === 'ECONNABORTED' || !error.response || (error.response.status >= 500 && error.response.status < 600))) {
+      config.__retryCount += 1;
+      // Exponential backoff: 1s, then 2s
+      const backoffDelay = config.__retryCount * 1000;
+      await new Promise(resolve => setTimeout(resolve, backoffDelay));
+      return client(config);
+    }
+
+    // Mutate the error message to present meaningful frontend errors to the UI
+    if (error.code === 'ECONNABORTED') {
+      error.message = "The AI verification pipeline timed out. Please try a shorter article or try again later.";
+      console.error("[Axios] Request timed out. " + error.message);
+    } else if (!error.response) {
+      error.message = "Network interruption. Failed to reach the TruthLens AI backend.";
+      console.error("[Axios] Network error. " + error.message);
+    }
+    
+    return Promise.reject(error);
+  }
+);
 
 export const api = {
   predict: async (text: string, mode: "production" | "research" = "production"): Promise<PredictResponse> => {
