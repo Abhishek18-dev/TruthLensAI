@@ -19,4 +19,4 @@ yake
 tavily-python
 trafilatura
 google-genai
-huggingface_hub
+huggingface_hub>=0.34.0
