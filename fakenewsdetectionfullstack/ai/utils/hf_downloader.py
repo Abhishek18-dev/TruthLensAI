@@ -20,36 +20,36 @@ class HFDownloader:
     @staticmethod
     def ensure_transformer(model_name: str, destination: Path):
 
-    HFDownloader._check_env()
-
-    if destination.exists():
-        return
-
-    destination.parent.mkdir(parents=True, exist_ok=True)
-
-    print(f"[HF] Downloading transformer: {model_name}")
-
-    snapshot_download(
-        repo_id=HF_REPO_ID,
-        repo_type="model",
-        token=HF_TOKEN,
-        allow_patterns=[f"transformers/{model_name}/*"],
-        local_dir=str(destination.parent),
-    )
-
-    downloaded = destination.parent / "transformers" / model_name
-
-    if downloaded.exists():
-        import shutil
-
-        shutil.move(str(downloaded), str(destination))
-
-        try:
-            shutil.rmtree(destination.parent / "transformers")
-        except Exception:
-            pass
-
-    print(f"[HF] Finished downloading {model_name}")
+        HFDownloader._check_env()
+    
+        if destination.exists():
+            return
+    
+        destination.parent.mkdir(parents=True, exist_ok=True)
+    
+        print(f"[HF] Downloading transformer: {model_name}")
+    
+        snapshot_download(
+            repo_id=HF_REPO_ID,
+            repo_type="model",
+            token=HF_TOKEN,
+            allow_patterns=[f"transformers/{model_name}/*"],
+            local_dir=str(destination.parent),
+        )
+    
+        downloaded = destination.parent / "transformers" / model_name
+    
+        if downloaded.exists():
+            import shutil
+    
+            shutil.move(str(downloaded), str(destination))
+    
+            try:
+                shutil.rmtree(destination.parent / "transformers")
+            except Exception:
+                pass
+    
+        print(f"[HF] Finished downloading {model_name}")
 
 
 
