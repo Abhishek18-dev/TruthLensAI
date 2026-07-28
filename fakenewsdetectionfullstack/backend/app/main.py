@@ -24,7 +24,7 @@ from ai.inference.model_loader import model_loader
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load all transformer models once during FastAPI startup.
-    model_loader.load_all_models()
+    model_loader.load_default_models()
     yield
 
 app = FastAPI(
