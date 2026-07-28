@@ -4,6 +4,12 @@
 
 import re
 import nltk
+import os
+
+nltk.data.path.append("/opt/render/nltk_data")
+nltk.data.path.append(os.path.expanduser("~/nltk_data"))
+nltk.data.path.append("/usr/local/share/nltk_data")
+nltk.data.path.append("/usr/share/nltk_data")
 
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords, wordnet
