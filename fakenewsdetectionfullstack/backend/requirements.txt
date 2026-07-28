@@ -17,3 +17,5 @@ pytest>=8.0.0
 spacy>=3.8.0
 yake
 tavily-python
+trafilatura
+google-genai
