@@ -20,23 +20,39 @@ class HFDownloader:
     @staticmethod
     def ensure_transformer(model_name: str, destination: Path):
 
-        if destination.exists():
-            return
+    HFDownloader._check_env()
 
-        destination.parent.mkdir(parents=True, exist_ok=True)
+    if destination.exists():
+        return
 
-        print(f"[HF] Downloading transformer: {model_name}")
+    destination.parent.mkdir(parents=True, exist_ok=True)
 
-        snapshot_download(
-            repo_id=HF_REPO_ID,
-            repo_type="model",
-            token=HF_TOKEN,
-            allow_patterns=[f"transformers/{model_name}/*"],
-            local_dir=str(destination.parents[2]),
-            local_dir_use_symlinks=False,
-        )
+    print(f"[HF] Downloading transformer: {model_name}")
 
-        print(f"[HF] Finished downloading {model_name}")
+    snapshot_download(
+        repo_id=HF_REPO_ID,
+        repo_type="model",
+        token=HF_TOKEN,
+        allow_patterns=[f"transformers/{model_name}/*"],
+        local_dir=str(destination.parent),
+    )
+
+    downloaded = destination.parent / "transformers" / model_name
+
+    if downloaded.exists():
+        import shutil
+
+        shutil.move(str(downloaded), str(destination))
+
+        try:
+            shutil.rmtree(destination.parent / "transformers")
+        except Exception:
+            pass
+
+    print(f"[HF] Finished downloading {model_name}")
+
+
+
 
     @staticmethod
     def ensure_ml_file(filename: str, destination: Path):
