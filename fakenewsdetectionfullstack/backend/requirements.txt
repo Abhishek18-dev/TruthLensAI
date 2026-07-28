@@ -19,3 +19,4 @@ yake
 tavily-python
 trafilatura
 google-genai
+gdown>=5.2.0
