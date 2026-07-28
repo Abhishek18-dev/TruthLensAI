@@ -10,8 +10,13 @@ def load_tokenizer(model_name: str) -> Any:
     model_path = TRANSFORMER_MODEL_PATHS.get(model_key)
     if model_path is None:
         raise ValueError(f"Unsupported tokenizer model: {model_name}")
-    if not model_path.exists():
-        raise FileNotFoundError(f"Tokenizer path not found: {model_path}")
+        
+    from ai.utils.hf_downloader import HFDownloader
+
+    HFDownloader.ensure_transformer(
+        model_key,
+        model_path,
+    )
 
     try:
         from transformers import AutoTokenizer
