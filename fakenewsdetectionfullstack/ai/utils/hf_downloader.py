@@ -56,41 +56,67 @@ class HFDownloader:
 
     @staticmethod
     def ensure_ml_file(filename: str, destination: Path):
-
+    
         if destination.exists():
             return
-
+    
         destination.parent.mkdir(parents=True, exist_ok=True)
-
+    
         print(f"[HF] Downloading ML file: {filename}")
-
+    
         hf_hub_download(
             repo_id=HF_REPO_ID,
             repo_type="model",
             filename=f"ml/{filename}",
             token=HF_TOKEN,
             local_dir=str(destination.parent),
-            local_dir_use_symlinks=False,
         )
+    
+        downloaded = destination.parent / "ml" / filename
+    
+        if downloaded.exists():
+            import shutil
+    
+            shutil.move(str(downloaded), str(destination))
+    
+            try:
+                shutil.rmtree(destination.parent / "ml")
+            except Exception:
+                pass
+    
+        print(f"[HF] Finished downloading {filename}")
 
     @staticmethod
     def ensure_dl_file(filename: str, destination: Path):
-
+    
         if destination.exists():
             return
-
+    
         destination.parent.mkdir(parents=True, exist_ok=True)
-
+    
         print(f"[HF] Downloading DL file: {filename}")
-
+    
         hf_hub_download(
             repo_id=HF_REPO_ID,
             repo_type="model",
             filename=f"dl/{filename}",
             token=HF_TOKEN,
             local_dir=str(destination.parent),
-            local_dir_use_symlinks=False,
         )
+    
+        downloaded = destination.parent / "dl" / filename
+    
+        if downloaded.exists():
+            import shutil
+    
+            shutil.move(str(downloaded), str(destination))
+    
+            try:
+                shutil.rmtree(destination.parent / "dl")
+            except Exception:
+                pass
+    
+        print(f"[HF] Finished downloading {filename}")
 
     @staticmethod
     def ensure_root_tokenizer(destination: Path):
