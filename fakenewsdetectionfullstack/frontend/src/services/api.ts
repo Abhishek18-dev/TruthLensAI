@@ -139,12 +139,12 @@ export const api = {
   },
 
   getAnalytics: async (): Promise<AnalyticsResponse> => {
-    const response = await client.get<AnalyticsResponse>("/analytics");
+    const response = await client.get<AnalyticsResponse>("/analytics", { timeout: 10000 });
     return response.data;
   },
 
   getHistory: async (): Promise<HistoryItem[]> => {
-    const response = await client.get<HistoryItem[]>("/history");
+    const response = await client.get<HistoryItem[]>("/history", { timeout: 10000 });
     return response.data;
   },
 

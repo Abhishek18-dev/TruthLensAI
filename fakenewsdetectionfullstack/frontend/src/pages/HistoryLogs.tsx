@@ -11,9 +11,10 @@ export const HistoryLogs: React.FC = () => {
     setLoading(true);
     try {
       const data = await truthLensApi.getHistory();
-      setHistory(data);
+      setHistory(Array.isArray(data) ? data : []);
     } catch (e) {
-      console.error(e);
+      console.error("Failed to fetch history logs:", e);
+      setHistory([]);
     } finally {
       setLoading(false);
     }
