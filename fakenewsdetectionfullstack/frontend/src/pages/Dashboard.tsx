@@ -36,12 +36,52 @@ export const Dashboard: React.FC = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const analyticsData = await truthLensApi.getAnalytics();
-      const historyData = await truthLensApi.getHistory();
-      setAnalytics(analyticsData);
-      setHistory(historyData);
+      // Run both requests concurrently. If one fails, we can catch it or handle it.
+      // We use Promise.allSettled to ensure one failure doesn't block the other.
+      const [analyticsResult, historyResult] = await Promise.allSettled([
+        truthLensApi.getAnalytics(),
+        truthLensApi.getHistory()
+      ]);
+
+      if (analyticsResult.status === 'fulfilled') {
+        setAnalytics(analyticsResult.value);
+      } else {
+        console.error("Analytics fetch failed:", analyticsResult.reason);
+        // Set fallback analytics so we don't get stuck in loading state
+        setAnalytics({
+          total_predictions: 0,
+          fake_percentage: 0,
+          real_percentage: 0,
+          average_confidence: 0,
+          average_inference_time: 0,
+          distribution_pie: {},
+          model_performance_bar: {},
+          timeline_line: [],
+          current_mode: "production"
+        });
+      }
+
+      if (historyResult.status === 'fulfilled') {
+        setHistory(Array.isArray(historyResult.value) ? historyResult.value : []);
+      } else {
+        console.error("History fetch failed:", historyResult.reason);
+        setHistory([]);
+      }
     } catch (e) {
-      console.error(e);
+      console.error("Unexpected error fetching dashboard data:", e);
+      // Fallback
+      setAnalytics({
+        total_predictions: 0,
+        fake_percentage: 0,
+        real_percentage: 0,
+        average_confidence: 0,
+        average_inference_time: 0,
+        distribution_pie: {},
+        model_performance_bar: {},
+        timeline_line: [],
+        current_mode: "production"
+      });
+      setHistory([]);
     } finally {
       setLoading(false);
     }

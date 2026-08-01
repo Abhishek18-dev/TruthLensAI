@@ -21,7 +21,12 @@ const MainLayout: React.FC<{ darkMode: boolean; toggleTheme: () => void }> = ({ 
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    truthLensApi.getHistory().then(setAllHistory).catch(console.error);
+    truthLensApi.getHistory().then((data) => {
+      setAllHistory(Array.isArray(data) ? data : []);
+    }).catch((e) => {
+      console.error("Failed to fetch history for search:", e);
+      setAllHistory([]);
+    });
     
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
