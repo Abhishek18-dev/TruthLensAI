@@ -23,6 +23,7 @@ import {
   Legend, 
   ResponsiveContainer 
 } from "recharts";
+import { useNavigate } from "react-router-dom";
 import { truthLensApi } from "../services/api";
 import type { AnalyticsResponse, HistoryItem } from "../services/api";
 
@@ -30,6 +31,7 @@ export const Dashboard: React.FC = () => {
   const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -96,6 +98,60 @@ export const Dashboard: React.FC = () => {
           <span>Refresh Data</span>
         </button>
       </div>
+
+      {/* Quick History Access */}
+      {history.length > 0 && (() => {
+        const latestFake = history.find(item => item.prediction === 'Fake');
+        const latestVerification = history[0];
+
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
+            {latestFake && (
+              <div className="premium-card p-6 border-l-4 border-l-red-500 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold text-red-500 uppercase tracking-wider flex items-center gap-1.5">
+                      <ShieldAlert size={14} /> Latest Fake News Alert
+                    </span>
+                    <span className="text-[10px] text-zinc-500">{latestFake.date}</span>
+                  </div>
+                  <p className="text-sm text-zinc-700 dark:text-zinc-300 line-clamp-2 italic mb-4">
+                    "{latestFake.text_snippet}"
+                  </p>
+                </div>
+                <button 
+                  onClick={() => navigate('/single-analysis', { state: { autoAnalyzeText: latestFake.input_text, mode: latestFake.mode } })}
+                  className="btn-primary w-full sm:w-auto bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50 border border-red-200 dark:border-red-900/50"
+                >
+                  Continue from last fake news analysis
+                </button>
+              </div>
+            )}
+            
+            {(!latestFake || latestFake.id !== latestVerification.id) && (
+              <div className={`premium-card p-6 border-l-4 ${latestVerification.prediction === 'Fake' ? 'border-l-red-500' : 'border-l-green-500'} flex flex-col justify-between`}>
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className={`text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 ${latestVerification.prediction === 'Fake' ? 'text-red-500' : 'text-green-500'}`}>
+                      <FileText size={14} /> Latest Verification
+                    </span>
+                    <span className="text-[10px] text-zinc-500">{latestVerification.date}</span>
+                  </div>
+                  <p className="text-sm text-zinc-700 dark:text-zinc-300 line-clamp-2 italic mb-4">
+                    "{latestVerification.text_snippet}"
+                  </p>
+                </div>
+                <button 
+                  onClick={() => navigate('/single-analysis', { state: { autoAnalyzeText: latestVerification.input_text, mode: latestVerification.mode } })}
+                  className="btn-secondary w-full sm:w-auto"
+                >
+                  Reopen latest analysis
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children">
