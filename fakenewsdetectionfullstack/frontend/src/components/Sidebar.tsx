@@ -23,10 +23,10 @@ export const Sidebar: React.FC<SidebarProps> = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const coreLinks = [
-    { name: "Overview", href: "/", icon: LayoutDashboard },
+    { name: "About Project", href: "/", icon: Info },
     { name: "Verify News", href: "/single-analysis", icon: Search },
-    { name: "History Logs", href: "/history-logs", icon: History },
-    { name: "About Project", href: "/about", icon: Info }
+    { name: "Overview", href: "/overview", icon: LayoutDashboard },
+    { name: "History Logs", href: "/history-logs", icon: History }
   ];
 
   return (

@@ -80,77 +80,72 @@ export const VerificationPanel: React.FC<VerificationPanelProps> = ({ verificati
 
         <div className="h-px w-full bg-gradient-to-r from-zinc-200 via-zinc-200 to-transparent dark:from-zinc-800 dark:via-zinc-800 dark:to-transparent opacity-70"></div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="flex flex-col gap-8">
           
-          <div className="space-y-8">
-            {/* 2. Verification Summary */}
-            <div>
-              <h4 className="flex items-center text-xs font-bold text-zinc-900 dark:text-zinc-50 uppercase tracking-widest mb-3">
-                <FileText size={16} className="mr-2 text-zinc-500" />
-                Verification Summary
-              </h4>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed bg-zinc-50/50 dark:bg-zinc-900/50 p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
-                {verification.summary}
+          {/* 5. Confidence */}
+          <div className="bg-zinc-50/80 dark:bg-zinc-900/80 p-6 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm flex flex-col justify-center">
+            <div className="flex justify-between items-end mb-3">
+              <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest flex items-center">
+                <Target size={14} className="mr-1.5" />
+                Agentic Confidence
+              </span>
+              <span className="text-2xl font-bold text-zinc-900 dark:text-zinc-50 leading-none">
+                {verification.confidence}%
+              </span>
+            </div>
+            <div className="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-3 shadow-inner overflow-hidden relative">
+              <div
+                className={`h-full rounded-full transition-all duration-1000 ease-out ${styles.bar} relative overflow-hidden`}
+                style={{ width: `${Math.min(verification.confidence, 100)}%` }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* 2. Verification Summary */}
+          <div>
+            <h4 className="flex items-center text-xs font-bold text-zinc-900 dark:text-zinc-50 uppercase tracking-widest mb-3">
+              <FileText size={16} className="mr-2 text-zinc-500" />
+              Verification Summary
+            </h4>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed bg-zinc-50/50 dark:bg-zinc-900/50 p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+              {verification.summary}
+            </p>
+          </div>
+
+          {/* 4. Reasoning */}
+          <div>
+            <h4 className="flex items-center text-xs font-bold text-zinc-900 dark:text-zinc-50 uppercase tracking-widest mb-3">
+              <Search size={16} className="mr-2 text-zinc-500" />
+              Reasoning Process
+            </h4>
+            <div className="bg-zinc-50/80 dark:bg-zinc-900/80 p-6 rounded-2xl border-l-4 border-l-zinc-500 border-y border-y-zinc-200 border-r border-r-zinc-200 dark:border-y-zinc-800 dark:border-r-zinc-800 shadow-sm relative">
+              <div className="absolute top-4 right-4 text-zinc-200 dark:text-zinc-800">
+                <FileSearch size={36} />
+              </div>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-line relative z-10">
+                {verification.reasoning}
               </p>
             </div>
-
-            {/* 3. Trusted Sources */}
-            {verification.sources.length > 0 && (
-              <div>
-                <h4 className="flex items-center text-xs font-bold text-zinc-900 dark:text-zinc-50 uppercase tracking-widest mb-3">
-                  <span className="flex items-center justify-center bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900 rounded-full w-5 h-5 mr-2 text-[10px] shadow-sm">
-                    {verification.sources.length}
-                  </span>
-                  Trusted Sources
-                </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2.5">
-                  {verification.sources.map((source, index) => (
-                    <SourceBadge key={index} source={source} />
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
-          <div className="space-y-8">
-            {/* 4. Reasoning */}
-            <div>
+          {/* 3. Trusted Sources */}
+          {verification.sources.length > 0 && (
+            <div className="flex flex-col">
               <h4 className="flex items-center text-xs font-bold text-zinc-900 dark:text-zinc-50 uppercase tracking-widest mb-3">
-                <Search size={16} className="mr-2 text-zinc-500" />
-                Reasoning Process
+                <span className="flex items-center justify-center bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900 rounded-full w-5 h-5 mr-2 text-[10px] shadow-sm">
+                  {verification.sources.length}
+                </span>
+                Trusted Sources
               </h4>
-              <div className="bg-zinc-50/80 dark:bg-zinc-900/80 p-6 rounded-2xl border-l-4 border-l-zinc-500 border-y border-y-zinc-200 border-r border-r-zinc-200 dark:border-y-zinc-800 dark:border-r-zinc-800 shadow-sm relative">
-                <div className="absolute top-4 right-4 text-zinc-200 dark:text-zinc-800">
-                  <FileSearch size={36} />
-                </div>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-line relative z-10">
-                  {verification.reasoning}
-                </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-2.5 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                {verification.sources.map((source, index) => (
+                  <SourceBadge key={index} source={source} />
+                ))}
               </div>
             </div>
-
-            {/* 5. Confidence */}
-            <div className="bg-zinc-50/80 dark:bg-zinc-900/80 p-6 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm flex flex-col justify-center">
-              <div className="flex justify-between items-end mb-3">
-                <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest flex items-center">
-                  <Target size={14} className="mr-1.5" />
-                  Agentic Confidence
-                </span>
-                <span className="text-2xl font-bold text-zinc-900 dark:text-zinc-50 leading-none">
-                  {verification.confidence}%
-                </span>
-              </div>
-              <div className="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-3 shadow-inner overflow-hidden relative">
-                <div
-                  className={`h-full rounded-full transition-all duration-1000 ease-out ${styles.bar} relative overflow-hidden`}
-                  style={{ width: `${Math.min(verification.confidence, 100)}%` }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></div>
-                </div>
-              </div>
-            </div>
-
-          </div>
+          )}
 
         </div>
 

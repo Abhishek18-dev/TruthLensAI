@@ -92,7 +92,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL ?? "/api";
 
 const client = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 300000, // 5 minute timeout for complex agentic RAG and Gemini verification
+  timeout: 0, // No timeout for complex agentic RAG and Gemini verification
   headers: {
     "Content-Type": "application/json",
   },

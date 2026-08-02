@@ -9,17 +9,17 @@
 }
 
 :root {
-  --bg-body: #F9FAFB;
+  --bg-body: #FAFAFA;
   --bg-card: #FFFFFF;
-  --bg-card-hover: #F3F4F6;
-  --border-color: #E5E7EB;
+  --bg-card-hover: #F5F5F4;
+  --border-color: #E7E5E4;
   --border-focus: #3B82F6;
-  --text-primary: #111827;
-  --text-secondary: #4B5563;
-  --text-muted: #9CA3AF;
+  --text-primary: #1C1917;
+  --text-secondary: #57534E;
+  --text-muted: #A8A29E;
   
-  --accent: #0F172A;
-  --accent-hover: #1E293B;
+  --accent: #1C1917;
+  --accent-hover: #292524;
   --accent-text: #FFFFFF;
   
   --success: #059669;
@@ -29,7 +29,7 @@
 }
 
 .dark {
-  --bg-body: #09090B;
+  --bg-body: #111113;
   --bg-card: #18181B;
   --bg-card-hover: #27272A;
   --border-color: #27272A;
@@ -40,7 +40,7 @@
   
   --accent: #F8FAFC;
   --accent-hover: #E2E8F0;
-  --accent-text: #09090B;
+  --accent-text: #111113;
   
   --success: #10B981;
   --warning: #F59E0B;
@@ -93,14 +93,16 @@ body {
   transform: translateY(-2px);
 }
 .dark .premium-card {
-  background-color: rgba(24, 24, 27, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  background-color: rgba(24, 24, 27, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 6px -1px rgba(0, 0, 0, 0.3);
 }
 .dark .premium-card:hover {
-  background-color: rgba(24, 24, 27, 0.8);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 10px 20px -3px rgba(0, 0, 0, 0.4);
+  background-color: rgba(24, 24, 27, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 20px -3px rgba(0, 0, 0, 0.4);
 }
 
 /* Animations */

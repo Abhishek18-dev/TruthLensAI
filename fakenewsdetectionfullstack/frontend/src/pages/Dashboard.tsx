@@ -27,61 +27,50 @@ import { useNavigate } from "react-router-dom";
 import { truthLensApi } from "../services/api";
 import type { AnalyticsResponse, HistoryItem } from "../services/api";
 
+const DEFAULT_ANALYTICS: AnalyticsResponse = {
+  total_predictions: 0,
+  fake_percentage: 0,
+  real_percentage: 0,
+  average_confidence: 0,
+  average_inference_time: 0,
+  distribution_pie: {},
+  model_performance_bar: {},
+  timeline_line: [],
+  current_mode: "production"
+};
+
 export const Dashboard: React.FC = () => {
-  const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
+  const [analytics, setAnalytics] = useState<AnalyticsResponse>(DEFAULT_ANALYTICS);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
   const fetchDashboardData = async () => {
     setLoading(true);
+    setError(false);
     try {
-      // Run both requests concurrently. If one fails, we can catch it or handle it.
-      // We use Promise.allSettled to ensure one failure doesn't block the other.
       const [analyticsResult, historyResult] = await Promise.allSettled([
         truthLensApi.getAnalytics(),
         truthLensApi.getHistory()
       ]);
 
-      if (analyticsResult.status === 'fulfilled') {
+      if (analyticsResult.status === 'fulfilled' && analyticsResult.value) {
         setAnalytics(analyticsResult.value);
       } else {
-        console.error("Analytics fetch failed:", analyticsResult.reason);
-        // Set fallback analytics so we don't get stuck in loading state
-        setAnalytics({
-          total_predictions: 0,
-          fake_percentage: 0,
-          real_percentage: 0,
-          average_confidence: 0,
-          average_inference_time: 0,
-          distribution_pie: {},
-          model_performance_bar: {},
-          timeline_line: [],
-          current_mode: "production"
-        });
+        console.error("Analytics fetch failed:", analyticsResult.status === 'rejected' ? analyticsResult.reason : 'Empty response');
+        setError(true);
       }
 
-      if (historyResult.status === 'fulfilled') {
+      if (historyResult.status === 'fulfilled' && historyResult.value) {
         setHistory(Array.isArray(historyResult.value) ? historyResult.value : []);
       } else {
-        console.error("History fetch failed:", historyResult.reason);
+        console.error("History fetch failed:", historyResult.status === 'rejected' ? historyResult.reason : 'Empty response');
         setHistory([]);
       }
     } catch (e) {
       console.error("Unexpected error fetching dashboard data:", e);
-      // Fallback
-      setAnalytics({
-        total_predictions: 0,
-        fake_percentage: 0,
-        real_percentage: 0,
-        average_confidence: 0,
-        average_inference_time: 0,
-        distribution_pie: {},
-        model_performance_bar: {},
-        timeline_line: [],
-        current_mode: "production"
-      });
-      setHistory([]);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -90,20 +79,6 @@ export const Dashboard: React.FC = () => {
   useEffect(() => {
     fetchDashboardData();
   }, []);
-
-  if (loading || !analytics) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6 animate-fadeIn">
-        <div className="relative w-12 h-12">
-          <div className="absolute inset-0 rounded-full border-2 border-zinc-200 dark:border-zinc-800"></div>
-          <div className="absolute inset-0 rounded-full border-2 border-t-zinc-900 dark:border-t-zinc-100 border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
-        </div>
-        <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
-          Loading command center...
-        </p>
-      </div>
-    );
-  }
 
   const PIE_COLORS = ["#ef4444", "#22c55e"]; // Red vs Green
 
@@ -123,9 +98,21 @@ export const Dashboard: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-            Overview
-          </h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+              Overview
+            </h2>
+            {loading && (
+              <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-[10px] font-medium uppercase tracking-wider animate-pulse">
+                <RefreshCw size={10} className="animate-spin" /> Updating
+              </span>
+            )}
+            {error && !loading && (
+              <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 text-[10px] font-medium uppercase tracking-wider">
+                <ShieldAlert size={10} /> Live Data Unavailable
+              </span>
+            )}
+          </div>
           <p className="text-sm text-zinc-500 dark:text-zinc-400">
             Real-time telemetry and validation precision across classifier models.
           </p>
@@ -133,8 +120,9 @@ export const Dashboard: React.FC = () => {
         <button
           onClick={fetchDashboardData}
           className="btn-secondary self-start"
+          disabled={loading}
         >
-          <RefreshCw size={14} />
+          <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
           <span>Refresh Data</span>
         </button>
       </div>
