@@ -75,14 +75,35 @@ export const SingleAnalysis: React.FC = () => {
     reader.onload = (event) => {
       const fileText = event.target?.result as string;
       setText(fileText);
+      // Auto-resize textarea
+      setTimeout(() => {
+        const textarea = document.getElementById("article") as HTMLTextAreaElement;
+        if (textarea) {
+          textarea.style.height = "auto";
+          textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+      }, 0);
     };
     reader.readAsText(file);
+  };
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setText(e.target.value);
+    e.target.style.height = "auto";
+    e.target.style.height = `${e.target.scrollHeight}px`;
   };
 
   const handlePaste = async () => {
     try {
       const clipboardText = await navigator.clipboard.readText();
       setText(clipboardText);
+      setTimeout(() => {
+        const textarea = document.getElementById("article") as HTMLTextAreaElement;
+        if (textarea) {
+          textarea.style.height = "auto";
+          textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+      }, 0);
     } catch (err) {
       setError("Failed to paste from clipboard. Please paste manually using Ctrl+V.");
       setTimeout(() => setError(""), 4000);
@@ -93,6 +114,12 @@ export const SingleAnalysis: React.FC = () => {
     setText("");
     setResult(null);
     setPipelineStep(0);
+    setTimeout(() => {
+      const textarea = document.getElementById("article") as HTMLTextAreaElement;
+      if (textarea) {
+        textarea.style.height = "auto";
+      }
+    }, 0);
   };
 
   const handlePredict = async () => {
@@ -249,10 +276,10 @@ export const SingleAnalysis: React.FC = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start">
+      <div className="flex flex-col gap-6 lg:gap-8 items-stretch w-full">
         
-        {/* LEFT COLUMN: Input */}
-        <div className="space-y-6">
+        {/* SECTION: Input */}
+        <div className="space-y-6 w-full">
           <div className="premium-card p-6 flex flex-col h-auto max-h-[700px] overflow-y-auto">
             <div className="flex flex-col xl:flex-row xl:items-center justify-between mb-6 gap-4">
               <label htmlFor="article" className="text-xs font-semibold text-zinc-900 dark:text-zinc-50 uppercase tracking-wider flex items-center gap-2">
@@ -295,13 +322,13 @@ export const SingleAnalysis: React.FC = () => {
               </div>
             </div>
 
-            <div className="relative flex-grow flex flex-col">
+            <div className="relative flex flex-col">
               <textarea
                 id="article"
                 value={text}
-                onChange={(e) => setText(e.target.value)}
+                onChange={handleTextChange}
                 placeholder="Paste raw article text, social media post, or transcript here to begin verification..."
-                className="input-premium flex-grow min-h-[300px] resize-none"
+                className="input-premium min-h-[250px] max-h-[500px] overflow-y-auto resize-none transition-none"
                 disabled={isLoading}
               />
               <span className="absolute bottom-3 right-3 text-[10px] font-mono text-zinc-400">
@@ -373,12 +400,12 @@ export const SingleAnalysis: React.FC = () => {
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Results Summary */}
-        <div className="space-y-6 flex flex-col h-full">
+        {/* SECTION: Results Summary */}
+        <div className="space-y-6 flex flex-col w-full">
           {result && result.verification ? (
             <VerificationPanel verification={result.verification} />
           ) : (
-            <div className="premium-card p-8 h-full flex flex-col items-center justify-center text-center">
+            <div className="premium-card p-8 min-h-[300px] flex flex-col items-center justify-center text-center">
                <ShieldCheck size={40} className="text-zinc-300 dark:text-zinc-700 mb-4" />
                <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">Awaiting Input</h3>
                <p className="text-sm mt-2 text-zinc-500 dark:text-zinc-400 max-w-sm">

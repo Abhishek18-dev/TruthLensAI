@@ -56,7 +56,7 @@ const MainLayout: React.FC<{ darkMode: boolean; toggleTheme: () => void }> = ({ 
   const handleSelectSearch = (item: HistoryItem) => {
     setIsSearchOpen(false);
     setSearchQuery("");
-    navigate('/single-analysis', { state: { autoAnalyzeText: item.input_text, mode: item.mode } });
+    navigate('/history-logs', { state: { highlightId: item.id } });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -64,7 +64,7 @@ const MainLayout: React.FC<{ darkMode: boolean; toggleTheme: () => void }> = ({ 
       if (searchResults.length > 0) {
         handleSelectSearch(searchResults[0]);
       } else if (searchQuery.trim()) {
-        navigate('/single-analysis', { state: { autoAnalyzeText: searchQuery, mode: 'production' } });
+        navigate('/history-logs', { state: { searchQuery: searchQuery.trim() } });
         setIsSearchOpen(false);
         setSearchQuery("");
       }
@@ -73,10 +73,10 @@ const MainLayout: React.FC<{ darkMode: boolean; toggleTheme: () => void }> = ({ 
 
   const getPageTitle = (path: string) => {
     switch (path) {
-      case "/": return "Dashboard Overview";
+      case "/": return "About System";
+      case "/overview": return "Dashboard Overview";
       case "/single-analysis": return "News Verification";
       case "/history-logs": return "Verification History";
-      case "/about": return "About System";
       default: return "TruthLens AI";
     }
   };
@@ -166,10 +166,10 @@ const MainLayout: React.FC<{ darkMode: boolean; toggleTheme: () => void }> = ({ 
         <main className="flex-grow p-8 overflow-y-auto relative">
           <div className="max-w-[1440px] mx-auto">
             <Routes>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/" element={<About />} />
+              <Route path="/overview" element={<Dashboard />} />
               <Route path="/single-analysis" element={<SingleAnalysis />} />
               <Route path="/history-logs" element={<HistoryLogs />} />
-              <Route path="/about" element={<About />} />
             </Routes>
           </div>
         </main>
